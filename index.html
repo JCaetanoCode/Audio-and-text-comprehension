@@ -18,6 +18,33 @@
     --radius: 12px;
     --shadow: 0 4px 16px rgba(30, 34, 51, 0.08);
   }
+
+  /* 🌙 MODO ESCURO */
+  body.dark-mode {
+    --bg: #12151e;
+    --card: #1c2130;
+    --primary: #5c85f6;
+    --primary-dark: #3b6cf6;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --border: #334155;
+    --shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+  body.dark-mode input[type="text"], body.dark-mode select { background: #0f172a; color: #e2e8f0; }
+  body.dark-mode .tag-header { background: linear-gradient(90deg, #1e293b, #1c2130); }
+  body.dark-mode .tag-name { color: var(--primary); }
+  body.dark-mode ol.phrases li:hover { background: #1e293b; }
+  body.dark-mode ol.phrases li:active { background: #334155; }
+  body.dark-mode button.secondary { background: #334155; color: #e2e8f0; }
+  body.dark-mode button.secondary:hover { background: #475569; }
+  body.dark-mode button.danger:disabled { background: #7f1d1d; color: #fca5a5; }
+  body.dark-mode .speaking { background: #1e3a8a !important; }
+  body.dark-mode .dictation-input { background: #0f172a; color: #fff; border-color: #475569; }
+  body.dark-mode .dictation-feedback.correct { background: rgba(22, 163, 74, 0.2); color: #4ade80; border-color: #166534; }
+  body.dark-mode .dictation-feedback.incorrect { background: rgba(229, 72, 77, 0.2); color: #fca5a5; border-color: #991b1b; }
+  body.dark-mode .dictation-input.correct { background: rgba(22, 163, 74, 0.1); color: #4ade80; }
+  body.dark-mode .dictation-input.incorrect { background: rgba(229, 72, 77, 0.1); color: #fca5a5; }
+
   * { box-sizing: border-box; }
   body {
     margin: 0;
@@ -25,6 +52,7 @@
     background: var(--bg);
     color: var(--text);
     padding: 24px 16px 60px;
+    transition: background 0.3s, color 0.3s;
   }
   .container { max-width: 760px; margin: 0 auto; }
   header { text-align: center; margin-bottom: 22px; }
@@ -37,6 +65,7 @@
     box-shadow: var(--shadow);
     padding: 18px;
     margin-bottom: 20px;
+    transition: background 0.3s;
   }
   .field-label {
     font-size: 0.8rem;
@@ -58,7 +87,7 @@
     background: #fbfcff;
     color: var(--text);
     outline: none;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.3s;
   }
   input[type="text"]:focus, select:focus {
     border-color: var(--primary);
@@ -73,7 +102,7 @@
     cursor: pointer;
     background: var(--primary);
     color: #fff;
-    transition: background 0.15s, transform 0.05s;
+    transition: background 0.15s, transform 0.05s, opacity 0.15s;
     white-space: nowrap;
   }
   button:hover { background: var(--primary-dark); }
@@ -82,6 +111,7 @@
   button.secondary:hover { background: #d9e3fb; }
   button.danger { background: var(--danger); }
   button.danger:hover { background: #c73b3f; }
+  button.danger:disabled { background: #fca5a5; cursor: not-allowed; opacity: 0.6; transform: none; }
   button.small { padding: 6px 10px; font-size: 0.82rem; }
   button.ghost {
     background: transparent;
@@ -102,20 +132,33 @@
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     margin-bottom: 20px;
+    transition: background 0.3s;
   }
-  .control-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
-  }
+  .control-group { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
   .control-group label { color: var(--muted); font-weight: 600; font-size: 0.82rem; }
-  .control-group select {
-    padding: 6px 8px;
-    min-width: auto;
-    font-size: 0.85rem;
-  }
+  .control-group select { padding: 6px 8px; min-width: auto; font-size: 0.85rem; }
   input[type="range"] { width: 110px; accent-color: var(--primary); }
+
+  .tags-nav {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+  }
+  .tag-tab {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid transparent;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    text-transform: capitalize;
+  }
+  .tag-tab:hover { background: #eef3ff; color: var(--primary-dark); }
+  .tag-tab.active { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(59, 108, 246, 0.3); }
+  .tag-tab.active:hover { background: var(--primary-dark); }
 
   .tag-block {
     background: var(--card);
@@ -123,7 +166,14 @@
     box-shadow: var(--shadow);
     margin-bottom: 16px;
     overflow: hidden;
+    animation: fadeIn 0.2s ease-in-out;
+    transition: background 0.3s;
   }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   .tag-header {
     display: flex;
     align-items: center;
@@ -133,21 +183,24 @@
     background: linear-gradient(90deg, #eef3ff, #f9fbff);
     border-bottom: 1px solid var(--border);
     flex-wrap: wrap;
+    transition: background 0.3s;
   }
-  .tag-name {
-    font-weight: 700;
-    font-size: 1.05rem;
-    color: var(--primary-dark);
-    text-transform: capitalize;
+  .tag-name { font-weight: 700; font-size: 1.05rem; color: var(--primary-dark); text-transform: capitalize; }
+  .tag-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  
+  .loop-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    cursor: pointer;
+    user-select: none;
+    padding: 0 4px;
   }
-  .tag-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .loop-label input { accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
 
-  ol.phrases {
-    list-style: none;
-    margin: 0;
-    padding: 8px 12px 14px;
-    counter-reset: phrase;
-  }
+  ol.phrases { list-style: none; margin: 0; padding: 8px 12px 14px; counter-reset: phrase; }
   ol.phrases li {
     counter-increment: phrase;
     display: flex;
@@ -157,7 +210,7 @@
     border-radius: 10px;
     cursor: pointer;
     transition: background 0.12s;
-    border-bottom: 1px dashed #eef1f7;
+    border-bottom: 1px dashed var(--border);
   }
   ol.phrases li:last-child { border-bottom: none; }
   ol.phrases li:hover { background: #f5f8ff; }
@@ -169,34 +222,35 @@
     font-size: 0.85rem;
     min-width: 30px;
   }
-  .phrase-text { flex: 1; font-size: 1rem; }
-  .phrase-text.editing {
-    background: #fffbe6;
-    outline: 2px solid var(--primary);
-    border-radius: 6px;
-    padding: 4px 6px;
-  }
+  
+  .phrase-content { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .phrase-text { font-size: 1rem; transition: filter 0.2s, opacity 0.2s; }
+  .phrase-text.editing { background: #fffbe6; outline: 2px solid var(--primary); border-radius: 6px; padding: 4px 6px; color: #1e2233; }
   .speaker { font-size: 1.1rem; opacity: 0.6; }
-
-  .empty {
-    text-align: center;
-    color: var(--muted);
-    padding: 30px 16px;
-    font-size: 0.95rem;
+  
+  /* Área do Ditado */
+  .dictation-area { display: none; width: 100%; gap: 6px; align-items: center; margin-top: 4px; }
+  .dictation-input { 
+    flex: 1; padding: 8px 12px; border-radius: 8px; border: 2px solid var(--border); outline: none; font-size: 0.95rem;
   }
+  .dictation-input.correct { border-color: var(--ok); background: #f0fdf4; color: #166534; }
+  .dictation-input.incorrect { border-color: var(--danger); background: #fef2f2; color: #991b1b; text-decoration: line-through; }
+  .dictation-feedback { display: none; width: 100%; font-size: 0.85rem; margin-top: 4px; padding: 8px; border-radius: 8px; }
+  .dictation-feedback.correct { background: #dcfce7; color: #166534; display: block; border: 1px solid #bbf7d0;}
+  .dictation-feedback.incorrect { background: #fee2e2; color: #991b1b; display: block; border: 1px solid #fecaca;}
+
+  .empty { text-align: center; color: var(--muted); padding: 30px 16px; font-size: 0.95rem; }
   .speaking { background: #e6efff !important; }
   .hint { font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
 
-  body.quiz-mode ol.phrases li .phrase-text {
-    filter: blur(6px);
-    user-select: none;
-    cursor: pointer;
-    transition: filter 0.2s;
-  }
-  body.quiz-mode ol.phrases li.revealed .phrase-text {
-    filter: none;
-    user-select: text;
-  }
+  /* Modos de Estudo */
+  body.blind-mode ol.phrases li .phrase-text { opacity: 0; user-select: none; }
+  body.blind-mode ol.phrases li.revealed .phrase-text { opacity: 1; user-select: text; }
+  body.quiz-mode ol.phrases li .phrase-text { filter: blur(6px); user-select: none; }
+  body.quiz-mode ol.phrases li.revealed .phrase-text { filter: none; user-select: text; }
+  
+  body.dictation-mode ol.phrases li .phrase-text { display: none; }
+  body.dictation-mode .dictation-area { display: flex; flex-wrap: wrap; }
 </style>
 </head>
 <body>
@@ -241,7 +295,9 @@
     </div>
     <div class="control-group">
       <button id="quizToggle" class="secondary small">🔀 Modo Quiz</button>
-      <button id="stopBtn" class="danger small">⏹ Parar</button>
+      <button id="blindToggle" class="secondary small">🙈 Ocultar textos</button>
+      <button id="dictationToggle" class="secondary small">✍️ Modo Ditado</button>
+      <button id="themeToggle" class="secondary small" title="Alternar Tema">🌙</button>
     </div>
   </div>
 
@@ -252,7 +308,19 @@
       <button id="importBtn" class="secondary">📥 Importar JSON</button>
       <input type="file" id="importFile" accept="application/json" style="display:none">
     </div>
-    <div class="hint">Exportar cria um arquivo com todas as tags e frases. Importar substitui os dados atuais.</div>
+  </div>
+
+  <div class="card">
+    <label class="field-label" for="txtInput">Importar / Exportar Frases (.txt)</label>
+    <div class="row" style="margin-bottom:10px;">
+      <select id="txtTagSelect"></select>
+    </div>
+    <div class="row">
+      <button id="importTxtBtn" class="secondary">📄 Carregar .txt</button>
+      <button id="exportTxtBtn" class="secondary">📄 Exportar .txt</button>
+      <input type="file" id="importTxtFile" accept=".txt" style="display:none">
+    </div>
+    <div class="hint">Cada linha do arquivo é uma frase. O menu acima define a tag de destino (importar) ou origem (exportar).</div>
   </div>
 
   <div class="card">
@@ -275,8 +343,11 @@
     <div class="hint">A frase será adicionada na tag selecionada acima.</div>
   </div>
 
+  <div id="emptyState" class="empty" style="display:none;">Nenhuma tag ainda. Crie uma acima para começar. ✨</div>
+
+  <div id="tagsNav" class="tags-nav"></div>
+
   <div id="tagsContainer"></div>
-  <div id="emptyState" class="empty">Nenhuma tag ainda. Crie uma acima para começar. ✨</div>
 </div>
 
 <script>
@@ -286,7 +357,11 @@
   let data = loadData();
   let settings = loadSettings();
   let activeTagId = data.length ? data[0].id : null;
+  
   let quizMode = false;
+  let blindMode = false;
+  let dictationMode = false;
+  let loopMode = false;
 
   let queueToken = 0;
   let isPlayingAll = false;
@@ -294,49 +369,92 @@
   const $ = id => document.getElementById(id);
   const tagInput = $("tagInput"), phraseInput = $("phraseInput");
   const tagSelect = $("tagSelect"), tagsContainer = $("tagsContainer");
+  const txtTagSelect = $("txtTagSelect");
+  const tagsNav = $("tagsNav");
   const emptyState = $("emptyState");
   const accentSelect = $("accentSelect");
   const speedRange = $("speedRange"), speedValue = $("speedValue");
   const repeatSelect = $("repeatSelect");
   const pauseSelect = $("pauseSelect");
-  const quizToggle = $("quizToggle"), stopBtn = $("stopBtn");
+  const quizToggle = $("quizToggle"), blindToggle = $("blindToggle"), dictationToggle = $("dictationToggle"), themeToggle = $("themeToggle");
   const exportBtn = $("exportBtn"), importBtn = $("importBtn"), importFile = $("importFile");
+  const importTxtBtn = $("importTxtBtn"), exportTxtBtn = $("exportTxtBtn"), importTxtFile = $("importTxtFile");
+
+  if (settings.theme === "dark") {
+    document.body.classList.add("dark-mode");
+    themeToggle.textContent = "☀️";
+  }
 
   $("addTagBtn").addEventListener("click", addTag);
   $("addPhraseBtn").addEventListener("click", addPhrase);
   tagInput.addEventListener("keydown", e => { if (e.key === "Enter") addTag(); });
   phraseInput.addEventListener("keydown", e => { if (e.key === "Enter") addPhrase(); });
-  tagSelect.addEventListener("change", () => { activeTagId = tagSelect.value; });
+  
+  tagSelect.addEventListener("change", () => { activeTagId = tagSelect.value; render(); });
 
-  accentSelect.addEventListener("change", () => {
-    settings.accent = accentSelect.value; saveSettings();
-  });
-  speedRange.addEventListener("input", () => {
-    settings.rate = parseFloat(speedRange.value);
-    speedValue.textContent = settings.rate.toFixed(1) + "x";
+  accentSelect.addEventListener("change", () => { settings.accent = accentSelect.value; saveSettings(); });
+  speedRange.addEventListener("input", () => { settings.rate = parseFloat(speedRange.value); speedValue.textContent = settings.rate.toFixed(1) + "x"; saveSettings(); });
+  repeatSelect.addEventListener("change", () => { settings.repeat = parseInt(repeatSelect.value, 10); saveSettings(); });
+  pauseSelect.addEventListener("change", () => { settings.pause = parseFloat(pauseSelect.value); saveSettings(); });
+
+  function toggleMode(mode) {
+    quizMode = (mode === 'quiz');
+    blindMode = (mode === 'blind');
+    dictationMode = (mode === 'dictation');
+    
+    updateModes();
+    
+    if (dictationMode && data.length > 0) {
+      const tag = data.find(t => t.id === activeTagId);
+      if (tag && tag.phrases.length > 0) {
+        speak(tag.phrases[0].text, null); 
+      }
+    }
+  }
+
+  quizToggle.addEventListener("click", () => toggleMode(quizMode ? 'none' : 'quiz'));
+  blindToggle.addEventListener("click", () => toggleMode(blindMode ? 'none' : 'blind'));
+  dictationToggle.addEventListener("click", () => toggleMode(dictationMode ? 'none' : 'dictation'));
+
+  themeToggle.addEventListener("click", () => {
+    const isDark = document.body.classList.toggle("dark-mode");
+    themeToggle.textContent = isDark ? "☀️" : "🌙";
+    settings.theme = isDark ? "dark" : "light";
     saveSettings();
   });
-  repeatSelect.addEventListener("change", () => {
-    settings.repeat = parseInt(repeatSelect.value, 10); saveSettings();
-  });
-  pauseSelect.addEventListener("change", () => {
-    settings.pause = parseFloat(pauseSelect.value); saveSettings();
-  });
 
-  quizToggle.addEventListener("click", () => {
-    quizMode = !quizMode;
+  function updateModes() {
     document.body.classList.toggle("quiz-mode", quizMode);
+    document.body.classList.toggle("blind-mode", blindMode);
+    document.body.classList.toggle("dictation-mode", dictationMode);
+    
     quizToggle.textContent = quizMode ? "👁 Sair do Quiz" : "🔀 Modo Quiz";
+    quizToggle.className = quizMode ? "small" : "secondary small";
+    
+    blindToggle.textContent = blindMode ? "👁 Revelar textos" : "🙈 Ocultar textos";
+    blindToggle.className = blindMode ? "small" : "secondary small";
+    
+    dictationToggle.textContent = dictationMode ? "✍️ Sair do Ditado" : "✍️ Modo Ditado";
+    dictationToggle.className = dictationMode ? "small" : "secondary small";
+    
     render();
-  });
+  }
 
-  stopBtn.addEventListener("click", () => {
+  function stopAudio() {
     queueToken++;
     isPlayingAll = false;
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     document.querySelectorAll(".speaking").forEach(el => el.classList.remove("speaking"));
-  });
+    const stopBtn = $("stopBtnLocal");
+    if (stopBtn) stopBtn.disabled = true;
+  }
 
+  function enableStopBtn() {
+    const stopBtn = $("stopBtnLocal");
+    if (stopBtn) stopBtn.disabled = false;
+  }
+
+  // ====== BACKUP JSON ======
   exportBtn.addEventListener("click", () => {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -348,6 +466,7 @@
   });
 
   importBtn.addEventListener("click", () => importFile.click());
+  
   importFile.addEventListener("change", () => {
     const file = importFile.files[0];
     if (!file) return;
@@ -360,38 +479,95 @@
         data = parsed.map(t => ({
           id: t.id || uid(),
           name: String(t.name || "sem nome"),
-          phrases: Array.isArray(t.phrases)
-            ? t.phrases.map(p => ({ id: p.id || uid(), text: String(p.text || "") }))
-            : []
+          phrases: Array.isArray(t.phrases) ? t.phrases.map(p => ({ id: p.id || uid(), text: String(p.text || "") })) : []
         }));
         activeTagId = data.length ? data[0].id : null;
         saveData(); render();
-      } catch (err) {
-        alert("Erro ao importar: " + err.message);
-      } finally {
-        importFile.value = "";
-      }
+      } catch (err) { alert("Erro ao importar: " + err.message); } 
+      finally { importFile.value = ""; }
     };
     reader.readAsText(file);
+  });
+
+  // ====== IMPORTAR / EXPORTAR TXT ======
+  importTxtBtn.addEventListener("click", () => {
+    if (!data.length) { alert("Crie uma tag primeiro!"); return; }
+    importTxtFile.click();
+  });
+
+  importTxtFile.addEventListener("change", () => {
+    const file = importTxtFile.files[0];
+    if (!file) return;
+    
+    const targetTagId = txtTagSelect.value;
+    const targetTag = data.find(t => t.id === targetTagId);
+    if (!targetTag) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const text = reader.result;
+        const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+        
+        if (lines.length === 0) {
+          alert("O arquivo parece estar vazio.");
+          return;
+        }
+
+        let addedCount = 0;
+        lines.forEach(line => {
+          targetTag.phrases.push({ id: uid(), text: line });
+          addedCount++;
+        });
+
+        saveData();
+        render();
+        alert(`Sucesso! ${addedCount} frases adicionadas à tag "${targetTag.name}".`);
+      } catch (err) {
+        alert("Erro ao ler o arquivo: " + err.message);
+      } finally {
+        importTxtFile.value = "";
+      }
+    };
+    reader.readAsText(file, "UTF-8");
+  });
+
+  exportTxtBtn.addEventListener("click", () => {
+    const targetTagId = txtTagSelect.value;
+    const targetTag = data.find(t => t.id === targetTagId);
+    if (!targetTag) return;
+
+    if (targetTag.phrases.length === 0) {
+      alert(`A tag "${targetTag.name}" está vazia.`);
+      return;
+    }
+
+    // Cria o texto com uma frase por linha
+    const content = targetTag.phrases.map(p => p.text).join("\n");
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    
+    // Sanitiza o nome da tag para usar como nome de arquivo
+    const safeName = targetTag.name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `frases_${safeName}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
   });
 
   function uid() { return Math.random().toString(36).slice(2, 10); }
 
   function loadData() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      const parsed = raw ? JSON.parse(raw) : [];
-      return Array.isArray(parsed) ? parsed : [];
-    } catch { return []; }
+    try { const raw = localStorage.getItem(STORAGE_KEY); const parsed = raw ? JSON.parse(raw) : []; return Array.isArray(parsed) ? parsed : []; } 
+    catch { return []; }
   }
   function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
 
   function loadSettings() {
-    const defaults = { accent: "en-US", rate: 1, repeat: 1, pause: 0.5 };
-    try {
-      const raw = localStorage.getItem(SETTINGS_KEY);
-      return raw ? { ...defaults, ...JSON.parse(raw) } : defaults;
-    } catch { return defaults; }
+    const defaults = { accent: "en-US", rate: 1, repeat: 1, pause: 0.5, theme: "light" };
+    try { const raw = localStorage.getItem(SETTINGS_KEY); return raw ? { ...defaults, ...JSON.parse(raw) } : defaults; } 
+    catch { return defaults; }
   }
   function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
 
@@ -418,6 +594,7 @@
 
   function removeTag(tagId) {
     if (!confirm("Remover esta tag e todas as suas frases?")) return;
+    stopAudio();
     data = data.filter(t => t.id !== tagId);
     if (activeTagId === tagId) activeTagId = data.length ? data[0].id : null;
     saveData(); render();
@@ -438,19 +615,12 @@
 
     const current = phrase.text;
     const input = document.createElement("input");
-    input.type = "text";
-    input.value = current;
-    input.style.width = "100%";
+    input.type = "text"; input.value = current; input.style.width = "100%";
 
     spanEl.replaceWith(input);
-    input.focus();
-    input.setSelectionRange(current.length, current.length);
+    input.focus(); input.setSelectionRange(current.length, current.length);
 
-    const commit = () => {
-      const val = input.value.trim();
-      phrase.text = val || current;
-      saveData(); render();
-    };
+    const commit = () => { const val = input.value.trim(); phrase.text = val || current; saveData(); render(); };
     const cancel = () => render();
 
     input.addEventListener("keydown", e => {
@@ -460,32 +630,26 @@
     input.addEventListener("blur", commit);
   }
 
-  // ====== Fala ======
   function speakOnce(text) {
     return new Promise(resolve => {
       if (!("speechSynthesis" in window)) { resolve(); return; }
       const utter = new SpeechSynthesisUtterance(text);
-      utter.lang = settings.accent;
-      utter.rate = settings.rate;
-      utter.pitch = 1;
+      utter.lang = settings.accent; utter.rate = settings.rate; utter.pitch = 1;
 
       const voices = window.speechSynthesis.getVoices();
       const exact = voices.find(v => v.lang === settings.accent);
       const fallback = voices.find(v => v.lang.startsWith(settings.accent.slice(0,2)));
       if (exact || fallback) utter.voice = exact || fallback;
 
-      utter.onend = resolve;
-      utter.onerror = resolve;
+      utter.onend = resolve; utter.onerror = resolve;
       window.speechSynthesis.speak(utter);
     });
   }
 
-  // Pausa cancelável — resolve cedo se o token mudar (Parar)
   function waitPause(seconds, token) {
     return new Promise(resolve => {
       if (!seconds || seconds <= 0) { resolve(); return; }
-      const start = Date.now();
-      const target = seconds * 1000;
+      const start = Date.now(); const target = seconds * 1000;
       const tick = () => {
         if (token !== queueToken) { resolve(); return; }
         if (Date.now() - start >= target) { resolve(); return; }
@@ -496,22 +660,23 @@
   }
 
   async function speak(text, liEl, forceSingle = false) {
-    if (!("speechSynthesis" in window)) {
-      alert("Seu navegador não suporta síntese de voz.");
-      return;
-    }
+    if (!("speechSynthesis" in window)) { alert("Seu navegador não suporta síntese de voz."); return; }
     window.speechSynthesis.cancel();
     isPlayingAll = false;
     const myToken = ++queueToken;
     const times = forceSingle ? 1 : settings.repeat;
+
+    enableStopBtn();
     if (liEl) liEl.classList.add("speaking");
+    
     for (let i = 0; i < times; i++) {
       if (myToken !== queueToken) break;
       await speakOnce(text);
-      // pausa entre repetições (exceto após a última)
       if (i < times - 1) await waitPause(settings.pause, myToken);
     }
+    
     if (liEl) liEl.classList.remove("speaking");
+    if (myToken === queueToken) { const stopBtn = $("stopBtnLocal"); if (stopBtn) stopBtn.disabled = true; }
   }
 
   async function playAllTag(tag) {
@@ -519,25 +684,56 @@
     window.speechSynthesis.cancel();
     const myToken = ++queueToken;
     isPlayingAll = true;
-    render();
-    const lis = tagsContainer.querySelectorAll(`[data-tag-id="${tag.id}"] ol.phrases li`);
-    for (let i = 0; i < tag.phrases.length; i++) {
-      if (myToken !== queueToken) { isPlayingAll = false; return; }
-      const li = lis[i];
-      if (li) li.classList.add("speaking");
-      for (let r = 0; r < settings.repeat; r++) {
-        if (myToken !== queueToken) break;
-        await speakOnce(tag.phrases[i].text);
-        // pausa entre repetições
-        if (r < settings.repeat - 1) await waitPause(settings.pause, myToken);
+    
+    enableStopBtn();
+    const lis = tagsContainer.querySelectorAll(`ol.phrases li`);
+    
+    do {
+      for (let i = 0; i < tag.phrases.length; i++) {
+        if (myToken !== queueToken) { isPlayingAll = false; return; }
+        const li = lis[i];
+        if (li) li.classList.add("speaking");
+        
+        for (let r = 0; r < settings.repeat; r++) {
+          if (myToken !== queueToken) break;
+          await speakOnce(tag.phrases[i].text);
+          if (r < settings.repeat - 1) await waitPause(settings.pause, myToken);
+        }
+        
+        if (li) li.classList.remove("speaking");
+        if (i < tag.phrases.length - 1) await waitPause(settings.pause, myToken);
       }
-      if (li) li.classList.remove("speaking");
-      // pausa entre frases (exceto após a última)
-      if (i < tag.phrases.length - 1) await waitPause(settings.pause, myToken);
-    }
+      
+      if (loopMode && myToken === queueToken) await waitPause(settings.pause > 0 ? settings.pause : 1, myToken);
+    } while (loopMode && myToken === queueToken);
+
     isPlayingAll = false;
+    if (myToken === queueToken) { const stopBtn = $("stopBtnLocal"); if (stopBtn) stopBtn.disabled = true; }
   }
 
+  // ====== DITADO ======
+  function checkDictation(originalText, inputElement, feedbackElement) {
+    const cleanStr = (str) => str.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"").replace(/\s{2,}/g," ").trim();
+    
+    const userVal = inputElement.value;
+    const isCorrect = cleanStr(userVal) === cleanStr(originalText);
+
+    inputElement.classList.remove("correct", "incorrect");
+    feedbackElement.classList.remove("correct", "incorrect");
+    inputElement.disabled = true; 
+
+    if (isCorrect) {
+      inputElement.classList.add("correct");
+      feedbackElement.textContent = "🟢 Excelente! Você acertou.";
+      feedbackElement.className = "dictation-feedback correct";
+    } else {
+      inputElement.classList.add("incorrect");
+      feedbackElement.innerHTML = `🔴 Incorreto. O correto era: <strong>"${originalText}"</strong>`;
+      feedbackElement.className = "dictation-feedback incorrect";
+    }
+  }
+
+  // ====== RENDERIZAÇÃO ======
   function render() {
     accentSelect.value = settings.accent;
     speedRange.value = settings.rate;
@@ -545,124 +741,200 @@
     repeatSelect.value = String(settings.repeat);
     pauseSelect.value = String(settings.pause);
 
-    tagSelect.innerHTML = "";
-    if (data.length === 0) {
-      const opt = document.createElement("option");
-      opt.textContent = "— Nenhuma tag —"; opt.value = "";
-      tagSelect.appendChild(opt);
-    } else {
-      data.forEach(t => {
+    [tagSelect, txtTagSelect].forEach(selectEl => {
+      // Guarda o valor selecionado atual para não perder ao renderizar
+      const currentVal = selectEl.value; 
+      selectEl.innerHTML = "";
+      
+      if (data.length === 0) {
         const opt = document.createElement("option");
-        opt.value = t.id; opt.textContent = t.name;
-        if (t.id === activeTagId) opt.selected = true;
-        tagSelect.appendChild(opt);
-      });
-    }
+        opt.textContent = "— Nenhuma tag —"; opt.value = "";
+        selectEl.appendChild(opt);
+      } else {
+        data.forEach(t => {
+          const opt = document.createElement("option");
+          opt.value = t.id; opt.textContent = t.name;
+          
+          if (t.id === activeTagId && selectEl === tagSelect) opt.selected = true;
+          if (t.id === currentVal && selectEl === txtTagSelect) opt.selected = true;
+          selectEl.appendChild(opt);
+        });
+        
+        // Se for o txtTagSelect e o valor anterior sumiu, seleciona o activeTagId
+        if (selectEl === txtTagSelect && !selectEl.value) {
+          selectEl.value = activeTagId;
+        }
+      }
+    });
 
-    tagsContainer.innerHTML = "";
+    tagsNav.innerHTML = "";
     if (data.length === 0) {
       emptyState.style.display = "block";
+      tagsContainer.innerHTML = "";
       return;
     }
     emptyState.style.display = "none";
 
     data.forEach(tag => {
-      const block = document.createElement("div");
-      block.className = "tag-block";
-      block.dataset.tagId = tag.id;
-
-      const header = document.createElement("div");
-      header.className = "tag-header";
-
-      const nameEl = document.createElement("span");
-      nameEl.className = "tag-name";
-      nameEl.textContent = tag.name;
-
-      const actions = document.createElement("div");
-      actions.className = "tag-actions";
-
-      const playAllBtn = document.createElement("button");
-      playAllBtn.className = "secondary small";
-      playAllBtn.textContent = "▶️ Ouvir tudo";
-      playAllBtn.addEventListener("click", () => playAllTag(tag));
-
-      const delBtn = document.createElement("button");
-      delBtn.className = "ghost";
-      delBtn.textContent = "🗑 Remover tag";
-      delBtn.addEventListener("click", () => removeTag(tag.id));
-
-      actions.appendChild(playAllBtn);
-      actions.appendChild(delBtn);
-      header.appendChild(nameEl);
-      header.appendChild(actions);
-      block.appendChild(header);
-
-      if (tag.phrases.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "empty";
-        empty.textContent = "Nenhuma frase nesta tag.";
-        block.appendChild(empty);
-      } else {
-        const ol = document.createElement("ol");
-        ol.className = "phrases";
-
-        tag.phrases.forEach(p => {
-          const li = document.createElement("li");
-          li.dataset.phraseId = p.id;
-
-          const txt = document.createElement("span");
-          txt.className = "phrase-text";
-          txt.textContent = p.text;
-
-          li.addEventListener("click", e => {
-            if (e.target.closest("button")) return;
-            if (quizMode && !li.classList.contains("revealed")) {
-              li.classList.add("revealed");
-              return;
-            }
-            speak(p.text, li);
-          });
-
-          txt.addEventListener("dblclick", e => {
-            e.stopPropagation();
-            if (quizMode && !li.classList.contains("revealed")) return;
-            editPhrase(tag.id, p.id, txt);
-          });
-
-          const spk = document.createElement("span");
-          spk.className = "speaker";
-          spk.textContent = "🔊";
-
-          const editBtn = document.createElement("button");
-          editBtn.className = "ghost";
-          editBtn.textContent = "✏️";
-          editBtn.title = "Editar frase";
-          editBtn.addEventListener("click", e => {
-            e.stopPropagation();
-            if (quizMode && !li.classList.contains("revealed")) return;
-            editPhrase(tag.id, p.id, txt);
-          });
-
-          const del = document.createElement("button");
-          del.className = "ghost";
-          del.textContent = "✕";
-          del.title = "Remover frase";
-          del.addEventListener("click", e => {
-            e.stopPropagation();
-            removePhrase(tag.id, p.id);
-          });
-
-          li.appendChild(txt);
-          li.appendChild(spk);
-          li.appendChild(editBtn);
-          li.appendChild(del);
-          ol.appendChild(li);
-        });
-        block.appendChild(ol);
-      }
-
-      tagsContainer.appendChild(block);
+      const tabBtn = document.createElement("button");
+      tabBtn.className = "tag-tab" + (tag.id === activeTagId ? " active" : "");
+      tabBtn.textContent = tag.name;
+      tabBtn.addEventListener("click", () => {
+        stopAudio();
+        activeTagId = tag.id;
+        render();
+      });
+      tagsNav.appendChild(tabBtn);
     });
+
+    tagsContainer.innerHTML = "";
+    const tag = data.find(t => t.id === activeTagId);
+    if (!tag) return;
+
+    const block = document.createElement("div");
+    block.className = "tag-block";
+
+    const header = document.createElement("div");
+    header.className = "tag-header";
+
+    const nameEl = document.createElement("span");
+    nameEl.className = "tag-name";
+    nameEl.textContent = tag.name;
+
+    const actions = document.createElement("div");
+    actions.className = "tag-actions";
+
+    const playAllBtn = document.createElement("button");
+    playAllBtn.className = "secondary small";
+    playAllBtn.textContent = "▶️ Ouvir tudo";
+    playAllBtn.addEventListener("click", () => playAllTag(tag));
+
+    const loopLabel = document.createElement("label");
+    loopLabel.className = "loop-label";
+    loopLabel.title = "Tocar as frases em loop infinito";
+    const loopCheck = document.createElement("input");
+    loopCheck.type = "checkbox";
+    loopCheck.checked = loopMode;
+    loopCheck.addEventListener("change", (e) => { loopMode = e.target.checked; });
+    loopLabel.appendChild(loopCheck);
+    loopLabel.appendChild(document.createTextNode("🔁 Loop"));
+
+    const localStopBtn = document.createElement("button");
+    localStopBtn.id = "stopBtnLocal";
+    localStopBtn.className = "danger small";
+    localStopBtn.textContent = "⏹ Parar";
+    localStopBtn.disabled = true;
+    localStopBtn.addEventListener("click", stopAudio);
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "ghost";
+    delBtn.textContent = "🗑 Remover tag";
+    delBtn.addEventListener("click", () => removeTag(tag.id));
+
+    actions.appendChild(playAllBtn);
+    actions.appendChild(loopLabel);
+    actions.appendChild(localStopBtn);
+    actions.appendChild(delBtn);
+    
+    header.appendChild(nameEl);
+    header.appendChild(actions);
+    block.appendChild(header);
+
+    if (tag.phrases.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = "Nenhuma frase nesta tag.";
+      block.appendChild(empty);
+    } else {
+      const ol = document.createElement("ol");
+      ol.className = "phrases";
+
+      tag.phrases.forEach(p => {
+        const li = document.createElement("li");
+        li.dataset.phraseId = p.id;
+
+        const contentDiv = document.createElement("div");
+        contentDiv.className = "phrase-content";
+
+        const txt = document.createElement("span");
+        txt.className = "phrase-text";
+        txt.textContent = p.text;
+
+        li.addEventListener("click", e => {
+          if (e.target.closest("button") || e.target.closest(".dictation-area")) return;
+          if ((quizMode || blindMode) && !li.classList.contains("revealed")) {
+            li.classList.add("revealed");
+            return;
+          }
+          speak(p.text, li);
+        });
+
+        txt.addEventListener("dblclick", e => {
+          e.stopPropagation();
+          if ((quizMode || blindMode) && !li.classList.contains("revealed")) return;
+          editPhrase(tag.id, p.id, txt);
+        });
+
+        contentDiv.appendChild(txt);
+
+        if (dictationMode) {
+          const dictArea = document.createElement("div");
+          dictArea.className = "dictation-area";
+          
+          const dictInput = document.createElement("input");
+          dictInput.type = "text";
+          dictInput.className = "dictation-input";
+          dictInput.placeholder = "Digite o que ouviu...";
+          dictInput.addEventListener("click", e => e.stopPropagation());
+          dictInput.addEventListener("keydown", e => {
+            if (e.key === "Enter") {
+              checkDictation(p.text, dictInput, dictFeedback);
+            }
+          });
+
+          const dictCheckBtn = document.createElement("button");
+          dictCheckBtn.className = "secondary small";
+          dictCheckBtn.textContent = "Verificar";
+          dictCheckBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            checkDictation(p.text, dictInput, dictFeedback);
+          });
+
+          const dictFeedback = document.createElement("div");
+          dictFeedback.className = "dictation-feedback";
+
+          dictArea.appendChild(dictInput);
+          dictArea.appendChild(dictCheckBtn);
+          dictArea.appendChild(dictFeedback);
+          contentDiv.appendChild(dictArea);
+        }
+
+        const spk = document.createElement("span");
+        spk.className = "speaker"; spk.textContent = "🔊";
+
+        const editBtn = document.createElement("button");
+        editBtn.className = "ghost"; editBtn.textContent = "✏️"; editBtn.title = "Editar frase";
+        editBtn.addEventListener("click", e => {
+          e.stopPropagation();
+          if ((quizMode || blindMode) && !li.classList.contains("revealed")) return;
+          editPhrase(tag.id, p.id, txt);
+        });
+
+        const del = document.createElement("button");
+        del.className = "ghost"; del.textContent = "✕"; del.title = "Remover frase";
+        del.addEventListener("click", e => { e.stopPropagation(); removePhrase(tag.id, p.id); });
+
+        li.appendChild(contentDiv);
+        li.appendChild(spk);
+        li.appendChild(editBtn);
+        li.appendChild(del);
+        ol.appendChild(li);
+      });
+      block.appendChild(ol);
+    }
+
+    tagsContainer.appendChild(block);
+    if (window.speechSynthesis && window.speechSynthesis.speaking) enableStopBtn();
   }
 
   if ("speechSynthesis" in window) {
