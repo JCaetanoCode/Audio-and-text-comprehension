@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Audio & Text Exercise</title>
 <style>
   :root {
@@ -30,6 +30,7 @@
     --shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
   body.dark-mode input[type="text"], body.dark-mode select { background: #0f172a; color: #e2e8f0; }
+  body.dark-mode .sticky-tag-bar { background: rgba(28, 33, 48, 0.95); border-bottom: 1px solid #334155; }
   body.dark-mode .tag-header { background: linear-gradient(90deg, #1e293b, #1c2130); }
   body.dark-mode .tag-name { color: var(--primary); }
   body.dark-mode ol.phrases li:hover { background: #1e293b; }
@@ -52,24 +53,60 @@
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     background: var(--bg);
     color: var(--text);
-    padding: 24px 16px 60px;
+    padding: 0 16px 60px; /* Removido padding do topo, pois a barra fixa vai ocupar */
     transition: background 0.3s, color 0.3s;
   }
   .container { max-width: 760px; margin: 0 auto; }
-  header { text-align: center; margin-bottom: 22px; }
-  header h1 { font-size: 1.6rem; margin: 0 0 6px; }
-  header p { color: var(--muted); margin: 0; font-size: 0.95rem; }
+  
+  header { text-align: center; padding: 20px 0 16px; }
+  header h1 { font-size: 1.4rem; margin: 0 0 6px; }
+  header p { color: var(--muted); margin: 0; font-size: 0.9rem; }
+
+  /* 🌟 BARRA FIXA DE SELEÇÃO DE TAGS (Mobile Friendly) 🌟 */
+  .sticky-tag-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(244, 246, 251, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 12px 0;
+    margin: 0 -16px 20px; /* Estica para as bordas */
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+  .sticky-tag-bar select {
+    width: 90%;
+    max-width: 400px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    border: 2px solid var(--primary);
+    background: var(--card);
+    color: var(--text);
+    outline: none;
+    box-shadow: 0 2px 8px rgba(59, 108, 246, 0.2);
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b6cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 20px;
+    cursor: pointer;
+  }
 
   .card {
     background: var(--card);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    padding: 18px;
-    margin-bottom: 20px;
+    padding: 16px;
+    margin-bottom: 16px;
     transition: background 0.3s;
   }
   .field-label {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.4px;
@@ -80,11 +117,11 @@
   .row { display: flex; gap: 10px; flex-wrap: wrap; }
   input[type="text"], select {
     flex: 1;
-    min-width: 160px;
-    padding: 11px 12px;
+    min-width: 140px;
+    padding: 12px;
     border: 1px solid var(--border);
     border-radius: 10px;
-    font-size: 0.95rem;
+    font-size: 1rem;
     background: #fbfcff;
     color: var(--text);
     outline: none;
@@ -97,7 +134,7 @@
   button {
     border: none;
     border-radius: 10px;
-    padding: 11px 16px;
+    padding: 12px 18px;
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
@@ -113,7 +150,7 @@
   button.danger { background: var(--danger); }
   button.danger:hover { background: #c73b3f; }
   button.danger:disabled { background: #fca5a5; cursor: not-allowed; opacity: 0.6; transform: none; }
-  button.small { padding: 6px 10px; font-size: 0.82rem; }
+  button.small { padding: 8px 12px; font-size: 0.8rem; border-radius: 8px; }
   button.ghost {
     background: transparent;
     color: var(--danger);
@@ -125,55 +162,34 @@
   button.translate-btn {
     background: transparent;
     color: var(--primary-dark);
-    padding: 4px 8px;
-    font-size: 0.85rem;
+    padding: 8px;
+    font-size: 1rem;
   }
-  button.translate-btn:hover { background: rgba(59, 108, 246, 0.1); }
+  button.translate-btn:hover { background: rgba(59, 108, 246, 0.1); border-radius: 8px; }
 
   .controls {
     display: flex;
-    gap: 14px;
+    gap: 10px;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     background: var(--card);
-    padding: 14px 18px;
+    padding: 12px;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     transition: background 0.3s;
   }
-  .control-group { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
-  .control-group label { color: var(--muted); font-weight: 600; font-size: 0.82rem; }
+  .control-group { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
+  .control-group label { color: var(--muted); font-weight: 600; }
   .control-group select { padding: 6px 8px; min-width: auto; font-size: 0.85rem; }
-  input[type="range"] { width: 110px; accent-color: var(--primary); }
-
-  .tags-nav {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--border);
-  }
-  .tag-tab {
-    background: transparent;
-    color: var(--muted);
-    border: 1px solid transparent;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 0.95rem;
-    text-transform: capitalize;
-  }
-  .tag-tab:hover { background: #eef3ff; color: var(--primary-dark); }
-  .tag-tab.active { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(59, 108, 246, 0.3); }
-  .tag-tab.active:hover { background: var(--primary-dark); }
+  input[type="range"] { width: 90px; accent-color: var(--primary); }
 
   .tag-block {
     background: var(--card);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     overflow: hidden;
     animation: fadeIn 0.2s ease-in-out;
     transition: background 0.3s;
@@ -194,19 +210,22 @@
     flex-wrap: wrap;
     transition: background 0.3s;
   }
-  .tag-name { font-weight: 700; font-size: 1.05rem; color: var(--primary-dark); text-transform: capitalize; }
+  .tag-name { font-weight: 700; font-size: 1.1rem; color: var(--primary-dark); }
   .tag-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
   
   .loop-label {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--muted);
     cursor: pointer;
     user-select: none;
-    padding: 0 4px;
+    background: rgba(0,0,0,0.05);
+    padding: 6px 10px;
+    border-radius: 8px;
   }
+  body.dark-mode .loop-label { background: rgba(255,255,255,0.1); }
   .loop-label input { accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
 
   ol.phrases { list-style: none; margin: 0; padding: 8px 12px 14px; counter-reset: phrase; }
@@ -214,8 +233,8 @@
     counter-increment: phrase;
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 10px;
+    gap: 8px;
+    padding: 12px 8px;
     border-radius: 10px;
     cursor: pointer;
     transition: background 0.12s;
@@ -228,45 +247,44 @@
     content: "(" counter(phrase) ")";
     color: var(--muted);
     font-weight: 600;
-    font-size: 0.85rem;
-    min-width: 30px;
+    font-size: 0.8rem;
+    min-width: 28px;
   }
   
-  .phrase-content { flex: 1; display: flex; flex-direction: column; gap: 6px; }
-  .phrase-text { font-size: 1rem; transition: filter 0.2s, opacity 0.2s; }
+  .phrase-content { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .phrase-text { font-size: 1.05rem; transition: filter 0.2s, opacity 0.2s; line-height: 1.4; }
   .phrase-text.editing { background: #fffbe6; outline: 2px solid var(--primary); border-radius: 6px; padding: 4px 6px; color: #1e2233; }
-  .speaker { font-size: 1.1rem; opacity: 0.6; }
+  .speaker { font-size: 1.1rem; opacity: 0.5; }
   
-  /* Contador de vezes ouvidas */
   .play-count {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
     background: #e8eefc;
     color: var(--primary-dark);
-    padding: 3px 8px;
+    padding: 3px 6px;
     border-radius: 20px;
     white-space: nowrap;
-    min-width: 44px;
+    min-width: 40px;
     text-align: center;
   }
-  .play-count.zero { opacity: 0.5; }
+  .play-count.zero { opacity: 0.4; }
 
   .translation-text {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: var(--muted);
     display: none;
-    padding-left: 4px;
+    padding-left: 6px;
     font-style: italic;
     border-left: 3px solid var(--primary);
-    margin-top: 2px;
+    margin-top: 4px;
   }
   .translation-text.visible { display: block; }
   .translation-text.loading { color: var(--primary); }
   .translation-text.error { color: var(--danger); }
 
-  .dictation-area { display: none; width: 100%; gap: 6px; align-items: center; margin-top: 4px; }
+  .dictation-area { display: none; width: 100%; gap: 6px; align-items: center; margin-top: 6px; }
   .dictation-input { 
-    flex: 1; padding: 8px 12px; border-radius: 8px; border: 2px solid var(--border); outline: none; font-size: 0.95rem;
+    flex: 1; padding: 10px 12px; border-radius: 8px; border: 2px solid var(--border); outline: none; font-size: 1rem;
   }
   .dictation-input.correct { border-color: var(--ok); background: #f0fdf4; color: #166534; }
   .dictation-input.incorrect { border-color: var(--danger); background: #fef2f2; color: #991b1b; text-decoration: line-through; }
@@ -294,6 +312,11 @@
     <p>Click on the text to hear the pronunciation</p>
   </header>
 
+  <!-- 🌟 BARRA FIXA (STICKY) DE NAVEGAÇÃO DE TAGS 🌟 -->
+  <div class="sticky-tag-bar">
+    <select id="tagSelect"></select>
+  </div>
+
   <div class="controls">
     <div class="control-group">
       <label for="accentSelect">Sotaque</label>
@@ -305,10 +328,10 @@
     <div class="control-group">
       <label for="speedRange">Velocidade</label>
       <input type="range" id="speedRange" min="0.5" max="1.5" step="0.05" value="1">
-      <span id="speedValue" style="min-width:34px;text-align:right;">1.0x</span>
+      <span id="speedValue" style="min-width:30px;text-align:right;">1.0x</span>
     </div>
     <div class="control-group">
-      <label for="repeatSelect">Repetições</label>
+      <label for="repeatSelect">Repet.</label>
       <select id="repeatSelect">
         <option value="1">1x</option>
         <option value="2">2x</option>
@@ -331,49 +354,41 @@
         <option value="7">7s</option>
       </select>
     </div>
-    <div class="control-group">
-      <button id="quizToggle" class="secondary small">🔀 Modo Quiz</button>
-      <button id="blindToggle" class="secondary small">🙈 Ocultar textos</button>
-      <button id="dictationToggle" class="secondary small">✍️ Modo Ditado</button>
+    <div class="control-group" style="width: 100%; justify-content: space-between; margin-top: 6px;">
+      <div style="display:flex; gap:6px;">
+        <button id="quizToggle" class="secondary small">🔀 Quiz</button>
+        <button id="blindToggle" class="secondary small">🙈 Ocultar</button>
+        <button id="dictationToggle" class="secondary small">✍️ Ditado</button>
+      </div>
       <button id="themeToggle" class="secondary small" title="Alternar Tema">🌙</button>
     </div>
   </div>
 
   <div class="card">
-    <label class="field-label">Backup</label>
+    <label class="field-label">Backup e Arquivos (.txt)</label>
+    <div class="row" style="margin-bottom:10px;">
+      <select id="txtTagSelect"></select>
+    </div>
     <div class="row">
-      <button id="exportBtn" class="secondary">📤 Exportar JSON</button>
-      <button id="importBtn" class="secondary">📥 Importar JSON</button>
+      <button id="importTxtBtn" class="secondary small">📄 Carregar .txt</button>
+      <button id="exportTxtBtn" class="secondary small">📄 Exportar .txt</button>
+      <button id="exportBtn" class="secondary small">📤 JSON</button>
+      <button id="importBtn" class="secondary small">📥 JSON</button>
+      <input type="file" id="importTxtFile" accept=".txt" style="display:none">
       <input type="file" id="importFile" accept="application/json" style="display:none">
     </div>
   </div>
 
   <div class="card">
-    <label class="field-label" for="txtInput">Importar / Exportar Frases (.txt)</label>
-    <div class="row" style="margin-bottom:10px;">
-      <select id="txtTagSelect"></select>
-    </div>
-    <div class="row">
-      <button id="importTxtBtn" class="secondary">📄 Carregar .txt</button>
-      <button id="exportTxtBtn" class="secondary">📄 Exportar .txt</button>
-      <input type="file" id="importTxtFile" accept=".txt" style="display:none">
-    </div>
-    <div class="hint">Cada linha do arquivo é uma frase. O menu acima define a tag de destino (importar) ou origem (exportar).</div>
-  </div>
-
-  <div class="card">
     <label class="field-label" for="tagInput">Adicione uma Tag</label>
     <div class="row">
-      <input type="text" id="tagInput" placeholder="ex: trabalho, lazer, viagem...">
+      <input type="text" id="tagInput" placeholder="ex: trabalho, lazer...">
       <button id="addTagBtn">Adicionar Tag</button>
     </div>
   </div>
 
   <div class="card">
     <label class="field-label" for="phraseInput">Adicione um Texto</label>
-    <div class="row" style="margin-bottom:10px;">
-      <select id="tagSelect"></select>
-    </div>
     <div class="row">
       <input type="text" id="phraseInput" placeholder="ex: I wake up at 4:00 AM">
       <button id="addPhraseBtn">Adicionar Texto</button>
@@ -383,8 +398,7 @@
 
   <div id="emptyState" class="empty" style="display:none;">Nenhuma tag ainda. Crie uma acima para começar. ✨</div>
 
-  <div id="tagsNav" class="tags-nav"></div>
-
+  <!-- Container que exibe apenas a tag ativa -->
   <div id="tagsContainer"></div>
 </div>
 
@@ -408,7 +422,6 @@
   const tagInput = $("tagInput"), phraseInput = $("phraseInput");
   const tagSelect = $("tagSelect"), tagsContainer = $("tagsContainer");
   const txtTagSelect = $("txtTagSelect");
-  const tagsNav = $("tagsNav");
   const emptyState = $("emptyState");
   const accentSelect = $("accentSelect");
   const speedRange = $("speedRange"), speedValue = $("speedValue");
@@ -428,7 +441,12 @@
   tagInput.addEventListener("keydown", e => { if (e.key === "Enter") addTag(); });
   phraseInput.addEventListener("keydown", e => { if (e.key === "Enter") addPhrase(); });
   
-  tagSelect.addEventListener("change", () => { activeTagId = tagSelect.value; render(); });
+  // O menu suspenso principal agora controla a tag ativa
+  tagSelect.addEventListener("change", () => { 
+    stopAudio(); // Para o áudio ao trocar de tag
+    activeTagId = tagSelect.value; 
+    render(); 
+  });
 
   accentSelect.addEventListener("change", () => { settings.accent = accentSelect.value; saveSettings(); });
   speedRange.addEventListener("input", () => { settings.rate = parseFloat(speedRange.value); speedValue.textContent = settings.rate.toFixed(1) + "x"; saveSettings(); });
@@ -466,13 +484,13 @@
     document.body.classList.toggle("blind-mode", blindMode);
     document.body.classList.toggle("dictation-mode", dictationMode);
     
-    quizToggle.textContent = quizMode ? "👁 Sair do Quiz" : "🔀 Modo Quiz";
+    quizToggle.textContent = quizMode ? "👁 Sair do Quiz" : "🔀 Quiz";
     quizToggle.className = quizMode ? "small" : "secondary small";
     
-    blindToggle.textContent = blindMode ? "👁 Revelar textos" : "🙈 Ocultar textos";
+    blindToggle.textContent = blindMode ? "👁 Revelar" : "🙈 Ocultar";
     blindToggle.className = blindMode ? "small" : "secondary small";
     
-    dictationToggle.textContent = dictationMode ? "✍️ Sair do Ditado" : "✍️ Modo Ditado";
+    dictationToggle.textContent = dictationMode ? "✍️ Sair do Ditado" : "✍️ Ditado";
     dictationToggle.className = dictationMode ? "small" : "secondary small";
     
     render();
@@ -492,7 +510,6 @@
     if (stopBtn) stopBtn.disabled = false;
   }
 
-  // ====== INCREMENTO DE CONTAGEM ======
   function incrementPlayCount(tagId, phraseId) {
     if (!tagId || !phraseId) return;
     const tag = data.find(t => t.id === tagId);
@@ -501,7 +518,6 @@
     if (!phrase) return;
     phrase.playCount = (phrase.playCount || 0) + 1;
     saveData();
-    // Atualiza só o contador na tela
     const li = tagsContainer.querySelector(`li[data-phrase-id="${phraseId}"]`);
     if (li) {
       const countEl = li.querySelector('.play-count');
@@ -512,17 +528,14 @@
     }
   }
 
-  // ====== TRADUÇÃO ======
   async function translateText(text) {
     const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|pt-BR`;
     try {
       const response = await fetch(url);
       if (!response.ok) throw new Error("Falha na rede");
       const json = await response.json();
-      if (json.responseData && json.responseData.translatedText) {
-        return json.responseData.translatedText;
-      }
-      throw new Error("Formato de resposta inválido");
+      if (json.responseData && json.responseData.translatedText) return json.responseData.translatedText;
+      throw new Error("Formato inválido");
     } catch (error) {
       console.error(error);
       return null;
@@ -543,7 +556,7 @@
       translationEl.textContent = result;
       translationEl.className = "translation-text visible";
     } else {
-      translationEl.textContent = "Erro ao traduzir (sem internet ou limite atingido).";
+      translationEl.textContent = "Erro ao traduzir.";
       translationEl.className = "translation-text visible error";
     }
   }
@@ -575,14 +588,10 @@
     }
     btnEl.textContent = originalText;
     btnEl.disabled = false;
-    if (errors > 0) {
-      alert(`Tradução concluída. Sucesso: ${count}, Falhas: ${errors}.`);
-    } else {
-      alert(`Todas as ${count} frases foram traduzidas!`);
-    }
+    if (errors > 0) alert(`Tradução: ${count} sucesso, ${errors} falhas.`);
+    else alert(`Todas as ${count} frases traduzidas!`);
   }
 
-  // ====== BACKUP JSON ======
   exportBtn.addEventListener("click", () => {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -621,7 +630,6 @@
     reader.readAsText(file);
   });
 
-  // ====== IMPORTAR / EXPORTAR TXT ======
   importTxtBtn.addEventListener("click", () => {
     if (!data.length) { alert("Crie uma tag primeiro!"); return; }
     importTxtFile.click();
@@ -645,7 +653,7 @@
           addedCount++;
         });
         saveData(); render();
-        alert(`Sucesso! ${addedCount} frases adicionadas à tag "${targetTag.name}".`);
+        alert(`Sucesso! ${addedCount} frases adicionadas.`);
       } catch (err) {
         alert("Erro ao ler o arquivo: " + err.message);
       } finally {
@@ -659,10 +667,7 @@
     const targetTagId = txtTagSelect.value;
     const targetTag = data.find(t => t.id === targetTagId);
     if (!targetTag) return;
-    if (targetTag.phrases.length === 0) {
-      alert(`A tag "${targetTag.name}" está vazia.`);
-      return;
-    }
+    if (targetTag.phrases.length === 0) { alert("Tag vazia."); return; }
     const content = targetTag.phrases.map(p => p.text).join("\n");
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -802,7 +807,6 @@
     if (myToken === queueToken) { const stopBtn = $("stopBtnLocal"); if (stopBtn) stopBtn.disabled = true; }
   }
 
-  // Simplificado: sempre toca do início
   async function playAllTag(tag) {
     if (!tag.phrases.length) return;
     window.speechSynthesis.cancel();
@@ -836,7 +840,6 @@
     if (myToken === queueToken) { const stopBtn = $("stopBtnLocal"); if (stopBtn) stopBtn.disabled = true; }
   }
 
-  // ====== DITADO ======
   function checkDictation(originalText, inputElement, feedbackElement) {
     const cleanStr = (str) => str.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"").replace(/\s{2,}/g," ").trim();
     const userVal = inputElement.value;
@@ -857,14 +860,8 @@
     }
   }
 
-  // ====== RENDERIZAÇÃO ======
   function render() {
-    accentSelect.value = settings.accent;
-    speedRange.value = settings.rate;
-    speedValue.textContent = settings.rate.toFixed(1) + "x";
-    repeatSelect.value = String(settings.repeat);
-    pauseSelect.value = String(settings.pause);
-
+    // Preenche os selects de Tag (o principal e o de importação)
     [tagSelect, txtTagSelect].forEach(selectEl => {
       const currentVal = selectEl.value; 
       selectEl.innerHTML = "";
@@ -877,7 +874,9 @@
         data.forEach(t => {
           const opt = document.createElement("option");
           opt.value = t.id; opt.textContent = t.name;
+          // Mantém a tag ativa selecionada no menu principal
           if (t.id === activeTagId && selectEl === tagSelect) opt.selected = true;
+          // Mantém a tag selecionada anteriormente no menu de importação
           if (t.id === currentVal && selectEl === txtTagSelect) opt.selected = true;
           selectEl.appendChild(opt);
         });
@@ -887,7 +886,6 @@
       }
     });
 
-    tagsNav.innerHTML = "";
     if (data.length === 0) {
       emptyState.style.display = "block";
       tagsContainer.innerHTML = "";
@@ -895,18 +893,7 @@
     }
     emptyState.style.display = "none";
 
-    data.forEach(tag => {
-      const tabBtn = document.createElement("button");
-      tabBtn.className = "tag-tab" + (tag.id === activeTagId ? " active" : "");
-      tabBtn.textContent = tag.name;
-      tabBtn.addEventListener("click", () => {
-        stopAudio();
-        activeTagId = tag.id;
-        render();
-      });
-      tagsNav.appendChild(tabBtn);
-    });
-
+    // Renderiza apenas a tag ativa
     tagsContainer.innerHTML = "";
     const tag = data.find(t => t.id === activeTagId);
     if (!tag) return;
@@ -924,7 +911,6 @@
     const actions = document.createElement("div");
     actions.className = "tag-actions";
 
-    // Botão Ouvir tudo (simplificado - do início)
     const playAllBtn = document.createElement("button");
     playAllBtn.className = "secondary small";
     playAllBtn.textContent = "▶️ Ouvir tudo";
