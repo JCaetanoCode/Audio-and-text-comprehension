@@ -46,6 +46,8 @@
   body.dark-mode .dictation-input.incorrect { background: rgba(229, 72, 77, 0.1); color: #fca5a5; }
   body.dark-mode .translation-text { color: #94a3b8; }
   body.dark-mode .play-count { background: #334155; color: #cbd5e1; }
+  body.dark-mode .reverse-portuguese-text { color: #94a3b8; }
+  body.dark-mode ol.phrases li.mastered { background: rgba(22, 163, 74, 0.1); }
 
   * { box-sizing: border-box; }
   body {
@@ -53,7 +55,7 @@
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     background: var(--bg);
     color: var(--text);
-    padding: 0 16px 60px; /* Removido padding do topo, pois a barra fixa vai ocupar */
+    padding: 0 16px 60px;
     transition: background 0.3s, color 0.3s;
   }
   .container { max-width: 760px; margin: 0 auto; }
@@ -62,84 +64,52 @@
   header h1 { font-size: 1.4rem; margin: 0 0 6px; }
   header p { color: var(--muted); margin: 0; font-size: 0.9rem; }
 
-  /* 🌟 BARRA FIXA DE SELEÇÃO DE TAGS (Mobile Friendly) 🌟 */
   .sticky-tag-bar {
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    position: sticky; top: 0; z-index: 100;
     background: rgba(244, 246, 251, 0.95);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    padding: 12px 0;
-    margin: 0 -16px 20px; /* Estica para as bordas */
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    padding: 12px 0; margin: 0 -16px 20px;
     border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: center;
+    display: flex; justify-content: center; flex-direction: column; align-items: center; gap: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   }
   .sticky-tag-bar select {
-    width: 90%;
-    max-width: 400px;
-    padding: 12px 16px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 1.05rem;
+    width: 90%; max-width: 400px;
+    padding: 12px 16px; border-radius: 10px;
+    font-weight: 700; font-size: 1.05rem;
     border: 2px solid var(--primary);
-    background: var(--card);
-    color: var(--text);
-    outline: none;
-    box-shadow: 0 2px 8px rgba(59, 108, 246, 0.2);
+    background: var(--card); color: var(--text);
+    outline: none; box-shadow: 0 2px 8px rgba(59, 108, 246, 0.2);
     appearance: none;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b6cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 20px;
+    background-repeat: no-repeat; background-position: right 12px center; background-size: 20px;
     cursor: pointer;
   }
 
   .card {
-    background: var(--card);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 16px;
-    margin-bottom: 16px;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 16px; margin-bottom: 16px;
     transition: background 0.3s;
   }
   .field-label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    color: var(--muted);
-    margin-bottom: 6px;
-    display: block;
+    font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.4px; color: var(--muted);
+    margin-bottom: 6px; display: block;
   }
   .row { display: flex; gap: 10px; flex-wrap: wrap; }
   input[type="text"], select {
-    flex: 1;
-    min-width: 140px;
-    padding: 12px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-size: 1rem;
-    background: #fbfcff;
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s, box-shadow 0.15s, background 0.3s;
+    flex: 1; min-width: 140px; padding: 12px;
+    border: 1px solid var(--border); border-radius: 10px;
+    font-size: 1rem; background: #fbfcff; color: var(--text);
+    outline: none; transition: border-color 0.15s, box-shadow 0.15s, background 0.3s;
   }
   input[type="text"]:focus, select:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(59, 108, 246, 0.15);
+    border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 108, 246, 0.15);
   }
   button {
-    border: none;
-    border-radius: 10px;
-    padding: 12px 18px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    background: var(--primary);
-    color: #fff;
+    border: none; border-radius: 10px; padding: 12px 18px;
+    font-size: 0.95rem; font-weight: 600; cursor: pointer;
+    background: var(--primary); color: #fff;
     transition: background 0.15s, transform 0.05s, opacity 0.15s;
     white-space: nowrap;
   }
@@ -151,33 +121,27 @@
   button.danger:hover { background: #c73b3f; }
   button.danger:disabled { background: #fca5a5; cursor: not-allowed; opacity: 0.6; transform: none; }
   button.small { padding: 8px 12px; font-size: 0.8rem; border-radius: 8px; }
-  button.ghost {
-    background: transparent;
-    color: var(--danger);
-    padding: 4px 8px;
-    font-size: 0.85rem;
-  }
+  button.ghost { background: transparent; color: var(--danger); padding: 4px 8px; font-size: 0.85rem; }
   button.ghost:hover { background: rgba(229, 72, 77, 0.1); }
   
-  button.translate-btn {
-    background: transparent;
-    color: var(--primary-dark);
-    padding: 8px;
-    font-size: 1rem;
-  }
+  button.translate-btn { background: transparent; color: var(--primary-dark); padding: 8px; font-size: 1rem; }
   button.translate-btn:hover { background: rgba(59, 108, 246, 0.1); border-radius: 8px; }
 
+  /* Botão de Check (Dominado) */
+  button.mastered-btn { 
+    background: transparent; color: var(--muted); padding: 6px; font-size: 1.1rem;
+    border-radius: 8px; opacity: 0.4; transition: all 0.2s;
+  }
+  button.mastered-btn:hover { opacity: 0.8; background: rgba(0,0,0,0.05); }
+  button.mastered-btn.is-mastered { 
+    opacity: 1; color: var(--ok); 
+    background: rgba(22, 163, 74, 0.1);
+  }
+
   .controls {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    background: var(--card);
-    padding: 12px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    margin-bottom: 16px;
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: center;
+    background: var(--card); padding: 12px; border-radius: var(--radius);
+    box-shadow: var(--shadow); margin-bottom: 16px;
     transition: background 0.3s;
   }
   .control-group { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
@@ -186,13 +150,9 @@
   input[type="range"] { width: 90px; accent-color: var(--primary); }
 
   .tag-block {
-    background: var(--card);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    margin-bottom: 20px;
-    overflow: hidden;
-    animation: fadeIn 0.2s ease-in-out;
-    transition: background 0.3s;
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); margin-bottom: 20px; overflow: hidden;
+    animation: fadeIn 0.2s ease-in-out; transition: background 0.3s;
   }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(5px); }
@@ -200,30 +160,19 @@
   }
 
   .tag-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; padding: 12px 16px;
     background: linear-gradient(90deg, #eef3ff, #f9fbff);
     border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
-    transition: background 0.3s;
+    flex-wrap: wrap; transition: background 0.3s;
   }
   .tag-name { font-weight: 700; font-size: 1.1rem; color: var(--primary-dark); }
   .tag-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
   
   .loop-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.8rem;
-    color: var(--muted);
-    cursor: pointer;
-    user-select: none;
-    background: rgba(0,0,0,0.05);
-    padding: 6px 10px;
-    border-radius: 8px;
+    display: flex; align-items: center; gap: 6px; font-size: 0.8rem;
+    color: var(--muted); cursor: pointer; user-select: none;
+    background: rgba(0,0,0,0.05); padding: 6px 10px; border-radius: 8px;
   }
   body.dark-mode .loop-label { background: rgba(255,255,255,0.1); }
   .loop-label input { accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
@@ -231,52 +180,44 @@
   ol.phrases { list-style: none; margin: 0; padding: 8px 12px 14px; counter-reset: phrase; }
   ol.phrases li {
     counter-increment: phrase;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 8px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.12s;
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 12px 8px; border-radius: 10px;
+    cursor: pointer; transition: background 0.12s;
     border-bottom: 1px dashed var(--border);
   }
   ol.phrases li:last-child { border-bottom: none; }
   ol.phrases li:hover { background: #f5f8ff; }
   ol.phrases li:active { background: #eaf0ff; }
+  
+  /* Estilo de frase dominada */
+  ol.phrases li.mastered { background: #f0fdf4; }
+  ol.phrases li.mastered .phrase-text { opacity: 0.7; }
+
   ol.phrases li::before {
     content: "(" counter(phrase) ")";
-    color: var(--muted);
-    font-weight: 600;
-    font-size: 0.8rem;
-    min-width: 28px;
+    color: var(--muted); font-weight: 600;
+    font-size: 0.8rem; min-width: 28px;
+    margin-top: 4px;
   }
   
-  .phrase-content { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .phrase-content { flex: 1; display: flex; flex-direction: column; gap: 4px; padding-top: 2px; }
   .phrase-text { font-size: 1.05rem; transition: filter 0.2s, opacity 0.2s; line-height: 1.4; }
   .phrase-text.editing { background: #fffbe6; outline: 2px solid var(--primary); border-radius: 6px; padding: 4px 6px; color: #1e2233; }
-  .speaker { font-size: 1.1rem; opacity: 0.5; }
+  .speaker { font-size: 1.1rem; opacity: 0.5; margin-top: 2px; }
   
   .play-count {
-    font-size: 0.7rem;
-    font-weight: 700;
-    background: #e8eefc;
-    color: var(--primary-dark);
-    padding: 3px 6px;
-    border-radius: 20px;
-    white-space: nowrap;
-    min-width: 40px;
-    text-align: center;
+    font-size: 0.7rem; font-weight: 700;
+    background: #e8eefc; color: var(--primary-dark);
+    padding: 3px 6px; border-radius: 20px;
+    white-space: nowrap; min-width: 40px; text-align: center;
+    margin-top: 4px;
   }
   .play-count.zero { opacity: 0.4; }
 
   .translation-text {
-    font-size: 0.9rem;
-    color: var(--muted);
-    display: none;
-    padding-left: 6px;
-    font-style: italic;
-    border-left: 3px solid var(--primary);
-    margin-top: 4px;
+    font-size: 0.9rem; color: var(--muted);
+    display: none; padding-left: 6px; font-style: italic;
+    border-left: 3px solid var(--primary); margin-top: 4px;
   }
   .translation-text.visible { display: block; }
   .translation-text.loading { color: var(--primary); }
@@ -296,13 +237,28 @@
   .speaking { background: #e6efff !important; }
   .hint { font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
 
-  body.blind-mode ol.phrases li .phrase-text { opacity: 0; user-select: none; }
-  body.blind-mode ol.phrases li.revealed .phrase-text { opacity: 1; user-select: text; }
-  body.quiz-mode ol.phrases li .phrase-text { filter: blur(6px); user-select: none; }
-  body.quiz-mode ol.phrases li.revealed .phrase-text { filter: none; user-select: text; }
+  /* Estilos dos Modos de Estudo */
+  body.blind-mode ol.phrases li .original-english-text { opacity: 0; user-select: none; }
+  body.blind-mode ol.phrases li.revealed .original-english-text { opacity: 1; user-select: text; }
+  body.quiz-mode ol.phrases li .original-english-text { filter: blur(6px); user-select: none; }
+  body.quiz-mode ol.phrases li.revealed .original-english-text { filter: none; user-select: text; }
   
-  body.dictation-mode ol.phrases li .phrase-text { display: none; }
+  body.dictation-mode ol.phrases li .original-english-text { display: none; }
   body.dictation-mode .dictation-area { display: flex; flex-wrap: wrap; }
+
+  /* 🔄 MODO REVERSO */
+  body.reverse-mode .trans-btn-icon,
+  body.reverse-mode .translation-text:not(.reverse-visible) { display: none !important; }
+  body.reverse-mode .original-english-text { display: none; }
+  body.reverse-mode li.revealed .original-english-text { display: block; margin-top: 4px; }
+  body.reverse-mode .reverse-portuguese-text { 
+    display: block; color: var(--primary-dark); font-size: 1.05rem;
+    min-height: 1.4em; font-weight: 600;
+  }
+  body.dark-mode.reverse-mode .reverse-portuguese-text { color: var(--primary); }
+  body.reverse-mode li.revealed .reverse-portuguese-text { 
+    font-size: 0.85rem; font-weight: normal; color: var(--muted); margin-bottom: 2px; 
+  }
 </style>
 </head>
 <body>
@@ -312,9 +268,13 @@
     <p>Click on the text to hear the pronunciation</p>
   </header>
 
-  <!-- 🌟 BARRA FIXA (STICKY) DE NAVEGAÇÃO DE TAGS 🌟 -->
   <div class="sticky-tag-bar">
     <select id="tagSelect"></select>
+    <select id="filterSelect" style="width: 90%; max-width: 400px; padding: 8px 12px; font-size: 0.9rem; border-color: var(--border); box-shadow: none;">
+      <option value="all">👁️ Mostrar Todas as Frases</option>
+      <option value="not-mastered">📚 Apenas Não Dominadas</option>
+      <option value="mastered">✅ Apenas Dominadas</option>
+    </select>
   </div>
 
   <div class="controls">
@@ -354,11 +314,13 @@
         <option value="7">7s</option>
       </select>
     </div>
+    
     <div class="control-group" style="width: 100%; justify-content: space-between; margin-top: 6px;">
-      <div style="display:flex; gap:6px;">
+      <div style="display:flex; gap:6px; flex-wrap: wrap;">
         <button id="quizToggle" class="secondary small">🔀 Quiz</button>
         <button id="blindToggle" class="secondary small">🙈 Ocultar</button>
         <button id="dictationToggle" class="secondary small">✍️ Ditado</button>
+        <button id="reverseToggle" class="secondary small" style="border: 1px solid var(--primary-dark);">🔄 Reverso</button>
       </div>
       <button id="themeToggle" class="secondary small" title="Alternar Tema">🌙</button>
     </div>
@@ -390,15 +352,14 @@
   <div class="card">
     <label class="field-label" for="phraseInput">Adicione um Texto</label>
     <div class="row">
-      <input type="text" id="phraseInput" placeholder="ex: I wake up at 4:00 AM">
+      <input type="text" id="phraseInput" placeholder="Inglês | Tradução (opcional)">
       <button id="addPhraseBtn">Adicionar Texto</button>
     </div>
-    <div class="hint">A frase será adicionada na tag selecionada acima.</div>
+    <div class="hint">Use o caractere <strong>|</strong> para separar o inglês da tradução.<br>Ex: <em>How's the weather | Como está o tempo</em></div>
   </div>
 
   <div id="emptyState" class="empty" style="display:none;">Nenhuma tag ainda. Crie uma acima para começar. ✨</div>
 
-  <!-- Container que exibe apenas a tag ativa -->
   <div id="tagsContainer"></div>
 </div>
 
@@ -409,10 +370,12 @@
   let data = loadData();
   let settings = loadSettings();
   let activeTagId = data.length ? data[0].id : null;
+  let currentFilter = "all"; // 'all', 'not-mastered', 'mastered'
   
   let quizMode = false;
   let blindMode = false;
   let dictationMode = false;
+  let reverseMode = false;
   let loopMode = false;
 
   let queueToken = 0;
@@ -420,14 +383,14 @@
 
   const $ = id => document.getElementById(id);
   const tagInput = $("tagInput"), phraseInput = $("phraseInput");
-  const tagSelect = $("tagSelect"), tagsContainer = $("tagsContainer");
+  const tagSelect = $("tagSelect"), filterSelect = $("filterSelect"), tagsContainer = $("tagsContainer");
   const txtTagSelect = $("txtTagSelect");
   const emptyState = $("emptyState");
   const accentSelect = $("accentSelect");
   const speedRange = $("speedRange"), speedValue = $("speedValue");
   const repeatSelect = $("repeatSelect");
   const pauseSelect = $("pauseSelect");
-  const quizToggle = $("quizToggle"), blindToggle = $("blindToggle"), dictationToggle = $("dictationToggle"), themeToggle = $("themeToggle");
+  const quizToggle = $("quizToggle"), blindToggle = $("blindToggle"), dictationToggle = $("dictationToggle"), reverseToggle = $("reverseToggle"), themeToggle = $("themeToggle");
   const exportBtn = $("exportBtn"), importBtn = $("importBtn"), importFile = $("importFile");
   const importTxtBtn = $("importTxtBtn"), exportTxtBtn = $("exportTxtBtn"), importTxtFile = $("importTxtFile");
 
@@ -441,12 +404,8 @@
   tagInput.addEventListener("keydown", e => { if (e.key === "Enter") addTag(); });
   phraseInput.addEventListener("keydown", e => { if (e.key === "Enter") addPhrase(); });
   
-  // O menu suspenso principal agora controla a tag ativa
-  tagSelect.addEventListener("change", () => { 
-    stopAudio(); // Para o áudio ao trocar de tag
-    activeTagId = tagSelect.value; 
-    render(); 
-  });
+  tagSelect.addEventListener("change", () => { stopAudio(); activeTagId = tagSelect.value; render(); });
+  filterSelect.addEventListener("change", (e) => { currentFilter = e.target.value; render(); });
 
   accentSelect.addEventListener("change", () => { settings.accent = accentSelect.value; saveSettings(); });
   speedRange.addEventListener("input", () => { settings.rate = parseFloat(speedRange.value); speedValue.textContent = settings.rate.toFixed(1) + "x"; saveSettings(); });
@@ -457,6 +416,7 @@
     quizMode = (mode === 'quiz');
     blindMode = (mode === 'blind');
     dictationMode = (mode === 'dictation');
+    reverseMode = (mode === 'reverse');
     
     updateModes();
     
@@ -471,6 +431,7 @@
   quizToggle.addEventListener("click", () => toggleMode(quizMode ? 'none' : 'quiz'));
   blindToggle.addEventListener("click", () => toggleMode(blindMode ? 'none' : 'blind'));
   dictationToggle.addEventListener("click", () => toggleMode(dictationMode ? 'none' : 'dictation'));
+  reverseToggle.addEventListener("click", () => toggleMode(reverseMode ? 'none' : 'reverse'));
 
   themeToggle.addEventListener("click", () => {
     const isDark = document.body.classList.toggle("dark-mode");
@@ -483,6 +444,7 @@
     document.body.classList.toggle("quiz-mode", quizMode);
     document.body.classList.toggle("blind-mode", blindMode);
     document.body.classList.toggle("dictation-mode", dictationMode);
+    document.body.classList.toggle("reverse-mode", reverseMode);
     
     quizToggle.textContent = quizMode ? "👁 Sair do Quiz" : "🔀 Quiz";
     quizToggle.className = quizMode ? "small" : "secondary small";
@@ -492,6 +454,9 @@
     
     dictationToggle.textContent = dictationMode ? "✍️ Sair do Ditado" : "✍️ Ditado";
     dictationToggle.className = dictationMode ? "small" : "secondary small";
+
+    reverseToggle.textContent = reverseMode ? "🔄 Sair do Reverso" : "🔄 Reverso";
+    reverseToggle.className = reverseMode ? "small" : "secondary small";
     
     render();
   }
@@ -528,6 +493,33 @@
     }
   }
 
+  function toggleMastered(tagId, phraseId) {
+    const tag = data.find(t => t.id === tagId);
+    if (!tag) return;
+    const phrase = tag.phrases.find(p => p.id === phraseId);
+    if (!phrase) return;
+    
+    phrase.mastered = !phrase.mastered;
+    saveData();
+    
+    // Se houver um filtro ativo, renderiza novamente para esconder/mostrar a frase
+    if (currentFilter !== 'all') {
+      render();
+    } else {
+      // Se for "mostrar todas", apenas atualiza a UI sem recarregar tudo para não perder o scroll
+      const li = tagsContainer.querySelector(`li[data-phrase-id="${phraseId}"]`);
+      if (li) {
+        if (phrase.mastered) {
+          li.classList.add('mastered');
+          li.querySelector('.mastered-btn').classList.add('is-mastered');
+        } else {
+          li.classList.remove('mastered');
+          li.querySelector('.mastered-btn').classList.remove('is-mastered');
+        }
+      }
+    }
+  }
+
   async function translateText(text) {
     const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|pt-BR`;
     try {
@@ -542,15 +534,22 @@
     }
   }
 
-  async function handleTranslatePhrase(phraseId, text, translationEl, btnEl) {
+  async function handleTranslatePhrase(phraseId, textObj, translationEl, btnEl) {
     if (translationEl.classList.contains("visible") && !translationEl.classList.contains("loading")) {
       translationEl.classList.remove("visible");
       return;
     }
+
+    if (textObj.translation) {
+      translationEl.textContent = textObj.translation;
+      translationEl.className = "translation-text visible";
+      return;
+    }
+
     translationEl.textContent = "Traduzindo...";
     translationEl.className = "translation-text visible loading";
     btnEl.disabled = true;
-    const result = await translateText(text);
+    const result = await translateText(textObj.english);
     btnEl.disabled = false;
     if (result) {
       translationEl.textContent = result;
@@ -569,19 +568,25 @@
     for (let i = 0; i < tag.phrases.length; i++) {
       const p = tag.phrases[i];
       const li = tagsContainer.querySelector(`li[data-phrase-id="${p.id}"]`);
-      if (li) {
-        const transEl = li.querySelector('.translation-text');
-        if (transEl && transEl.classList.contains('visible') && !transEl.classList.contains('error')) continue;
+      const transEl = li ? li.querySelector('.translation-text') : null;
+      
+      if (transEl && transEl.classList.contains('visible') && !transEl.classList.contains('error')) continue;
+
+      if (p.translation) {
+        if (transEl) {
+          transEl.textContent = p.translation;
+          transEl.className = "translation-text visible";
+        }
+        count++;
+        continue;
       }
+
       const result = await translateText(p.text);
       if (result) {
         count++;
-        if (li) {
-          const transEl = li.querySelector('.translation-text');
-          if (transEl) {
-            transEl.textContent = result;
-            transEl.className = "translation-text visible";
-          }
+        if (transEl) {
+          transEl.textContent = result;
+          transEl.className = "translation-text visible";
         }
       } else { errors++; }
       await new Promise(r => setTimeout(r, 800));
@@ -592,14 +597,13 @@
     else alert(`Todas as ${count} frases traduzidas!`);
   }
 
+  // ====== BACKUP E TXT ======
   exportBtn.addEventListener("click", () => {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url;
-    a.download = "audio-text-exercise-" + new Date().toISOString().slice(0,10) + ".json";
-    a.click();
-    URL.revokeObjectURL(url);
+    a.href = url; a.download = "audio-text-exercise-" + new Date().toISOString().slice(0,10) + ".json";
+    a.click(); URL.revokeObjectURL(url);
   });
 
   importBtn.addEventListener("click", () => importFile.click());
@@ -614,12 +618,13 @@
         if (!Array.isArray(parsed)) throw new Error("Formato inválido");
         if (!confirm("Importar substituirá todos os dados atuais. Continuar?")) return;
         data = parsed.map(t => ({
-          id: t.id || uid(),
-          name: String(t.name || "sem nome"),
+          id: t.id || uid(), name: String(t.name || "sem nome"),
           phrases: Array.isArray(t.phrases) ? t.phrases.map(p => ({ 
             id: p.id || uid(), 
-            text: String(p.text || ""),
-            playCount: Number(p.playCount) || 0
+            text: String(p.text || ""), 
+            translation: String(p.translation || ""),
+            playCount: Number(p.playCount) || 0,
+            mastered: Boolean(p.mastered) // Compatibilidade com JSON novo
           })) : []
         }));
         activeTagId = data.length ? data[0].id : null;
@@ -638,85 +643,66 @@
   importTxtFile.addEventListener("change", () => {
     const file = importTxtFile.files[0];
     if (!file) return;
-    const targetTagId = txtTagSelect.value;
-    const targetTag = data.find(t => t.id === targetTagId);
+    const targetTag = data.find(t => t.id === txtTagSelect.value);
     if (!targetTag) return;
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        const text = reader.result;
-        const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
-        if (lines.length === 0) { alert("O arquivo parece estar vazio."); return; }
-        let addedCount = 0;
+        const lines = reader.result.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+        if (lines.length === 0) { alert("Arquivo vazio."); return; }
         lines.forEach(line => {
-          targetTag.phrases.push({ id: uid(), text: line, playCount: 0 });
-          addedCount++;
+          const parts = line.split("|").map(s => s.trim());
+          const eng = parts[0];
+          const pt = parts[1] || "";
+          targetTag.phrases.push({ id: uid(), text: eng, translation: pt, playCount: 0, mastered: false });
         });
         saveData(); render();
-        alert(`Sucesso! ${addedCount} frases adicionadas.`);
-      } catch (err) {
-        alert("Erro ao ler o arquivo: " + err.message);
-      } finally {
-        importTxtFile.value = "";
-      }
+        alert(`Sucesso! ${lines.length} frases adicionadas.`);
+      } catch (err) { alert("Erro: " + err.message); } 
+      finally { importTxtFile.value = ""; }
     };
     reader.readAsText(file, "UTF-8");
   });
 
   exportTxtBtn.addEventListener("click", () => {
-    const targetTagId = txtTagSelect.value;
-    const targetTag = data.find(t => t.id === targetTagId);
-    if (!targetTag) return;
-    if (targetTag.phrases.length === 0) { alert("Tag vazia."); return; }
-    const content = targetTag.phrases.map(p => p.text).join("\n");
+    const targetTag = data.find(t => t.id === txtTagSelect.value);
+    if (!targetTag || targetTag.phrases.length === 0) { alert("Tag vazia."); return; }
+    const content = targetTag.phrases.map(p => {
+      return p.translation ? `${p.text} | ${p.translation}` : p.text;
+    }).join("\n");
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
-    const safeName = targetTag.name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
     const a = document.createElement("a");
-    a.href = url;
-    a.download = `frases_${safeName}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+    a.href = url; a.download = `frases_${targetTag.name.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.txt`;
+    a.click(); URL.revokeObjectURL(url);
   });
 
   function uid() { return Math.random().toString(36).slice(2, 10); }
-
-  function loadData() {
-    try { 
-      const raw = localStorage.getItem(STORAGE_KEY); 
-      const parsed = raw ? JSON.parse(raw) : []; 
-      return Array.isArray(parsed) ? parsed : []; 
-    } 
-    catch { return []; }
-  }
+  function loadData() { try { const raw = localStorage.getItem(STORAGE_KEY); const parsed = raw ? JSON.parse(raw) : []; return Array.isArray(parsed) ? parsed : []; } catch { return []; } }
   function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
-
-  function loadSettings() {
-    const defaults = { accent: "en-US", rate: 1, repeat: 1, pause: 0.5, theme: "light" };
-    try { const raw = localStorage.getItem(SETTINGS_KEY); return raw ? { ...defaults, ...JSON.parse(raw) } : defaults; } 
-    catch { return defaults; }
-  }
+  function loadSettings() { const defaults = { accent: "en-US", rate: 1, repeat: 1, pause: 0.5, theme: "light" }; try { const raw = localStorage.getItem(SETTINGS_KEY); return raw ? { ...defaults, ...JSON.parse(raw) } : defaults; } catch { return defaults; } }
   function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
 
   function addTag() {
     const name = tagInput.value.trim();
     if (!name) return;
     const tag = { id: uid(), name, phrases: [] };
-    data.push(tag);
-    activeTagId = tag.id;
-    tagInput.value = "";
+    data.push(tag); activeTagId = tag.id; tagInput.value = "";
     saveData(); render();
   }
 
   function addPhrase() {
     if (!activeTagId) { alert("Crie uma tag primeiro!"); return; }
-    const text = phraseInput.value.trim();
-    if (!text) return;
+    const rawInput = phraseInput.value.trim();
+    if (!rawInput) return;
+
+    const parts = rawInput.split("|").map(s => s.trim());
+    const eng = parts[0];
+    const pt = parts[1] || "";
+
     const tag = data.find(t => t.id === activeTagId);
-    if (!tag) return;
-    tag.phrases.push({ id: uid(), text, playCount: 0 });
-    phraseInput.value = "";
-    saveData(); render();
+    tag.phrases.push({ id: uid(), text: eng, translation: pt, playCount: 0, mastered: false });
+    phraseInput.value = ""; saveData(); render();
   }
 
   function removeTag(tagId) {
@@ -739,15 +725,23 @@
     if (!tag) return;
     const phrase = tag.phrases.find(p => p.id === phraseId);
     if (!phrase) return;
-
-    const current = phrase.text;
+    
+    const current = phrase.translation ? `${phrase.text} | ${phrase.translation}` : phrase.text;
     const input = document.createElement("input");
     input.type = "text"; input.value = current; input.style.width = "100%";
-
+    
     spanEl.replaceWith(input);
     input.focus(); input.setSelectionRange(current.length, current.length);
-
-    const commit = () => { const val = input.value.trim(); phrase.text = val || current; saveData(); render(); };
+    
+    const commit = () => { 
+      const val = input.value.trim(); 
+      if (val) {
+        const parts = val.split("|").map(s => s.trim());
+        phrase.text = parts[0];
+        phrase.translation = parts[1] || "";
+      }
+      saveData(); render(); 
+    };
     const cancel = () => render();
 
     input.addEventListener("keydown", e => {
@@ -762,12 +756,10 @@
       if (!("speechSynthesis" in window)) { resolve(); return; }
       const utter = new SpeechSynthesisUtterance(text);
       utter.lang = settings.accent; utter.rate = settings.rate; utter.pitch = 1;
-
       const voices = window.speechSynthesis.getVoices();
       const exact = voices.find(v => v.lang === settings.accent);
       const fallback = voices.find(v => v.lang.startsWith(settings.accent.slice(0,2)));
       if (exact || fallback) utter.voice = exact || fallback;
-
       utter.onend = resolve; utter.onerror = resolve;
       window.speechSynthesis.speak(utter);
     });
@@ -777,11 +769,7 @@
     return new Promise(resolve => {
       if (!seconds || seconds <= 0) { resolve(); return; }
       const start = Date.now(); const target = seconds * 1000;
-      const tick = () => {
-        if (token !== queueToken) { resolve(); return; }
-        if (Date.now() - start >= target) { resolve(); return; }
-        setTimeout(tick, 50);
-      };
+      const tick = () => { if (token !== queueToken) { resolve(); return; } if (Date.now() - start >= target) { resolve(); return; } setTimeout(tick, 50); };
       tick();
     });
   }
@@ -808,29 +796,40 @@
   }
 
   async function playAllTag(tag) {
-    if (!tag.phrases.length) return;
+    // Pega apenas as frases que estão visíveis no filtro atual
+    const visiblePhrases = tag.phrases.filter(p => {
+      if (currentFilter === 'mastered') return p.mastered;
+      if (currentFilter === 'not-mastered') return !p.mastered;
+      return true;
+    });
+
+    if (!visiblePhrases.length) { alert("Nenhuma frase para ouvir com o filtro atual."); return; }
+    
     window.speechSynthesis.cancel();
     const myToken = ++queueToken;
     isPlayingAll = true;
-    
     enableStopBtn();
+    
+    // Pega os elementos <li> visíveis
     const lis = tagsContainer.querySelectorAll(`ol.phrases li`);
     
     do {
-      for (let i = 0; i < tag.phrases.length; i++) {
+      for (let i = 0; i < visiblePhrases.length; i++) {
         if (myToken !== queueToken) { isPlayingAll = false; return; }
-        const li = lis[i];
+        
+        // Encontra o <li> correspondente à frase (pode estar em índice diferente do DOM se filtrado)
+        const li = Array.from(lis).find(el => el.dataset.phraseId === visiblePhrases[i].id);
         if (li) li.classList.add("speaking");
         
         for (let r = 0; r < settings.repeat; r++) {
           if (myToken !== queueToken) break;
-          await speakOnce(tag.phrases[i].text);
-          incrementPlayCount(tag.id, tag.phrases[i].id);
+          await speakOnce(visiblePhrases[i].text);
+          incrementPlayCount(tag.id, visiblePhrases[i].id);
           if (r < settings.repeat - 1) await waitPause(settings.pause, myToken);
         }
         
         if (li) li.classList.remove("speaking");
-        if (i < tag.phrases.length - 1) await waitPause(settings.pause, myToken);
+        if (i < visiblePhrases.length - 1) await waitPause(settings.pause, myToken);
       }
       
       if (loopMode && myToken === queueToken) await waitPause(settings.pause > 0 ? settings.pause : 1, myToken);
@@ -861,11 +860,9 @@
   }
 
   function render() {
-    // Preenche os selects de Tag (o principal e o de importação)
     [tagSelect, txtTagSelect].forEach(selectEl => {
       const currentVal = selectEl.value; 
       selectEl.innerHTML = "";
-      
       if (data.length === 0) {
         const opt = document.createElement("option");
         opt.textContent = "— Nenhuma tag —"; opt.value = "";
@@ -874,73 +871,54 @@
         data.forEach(t => {
           const opt = document.createElement("option");
           opt.value = t.id; opt.textContent = t.name;
-          // Mantém a tag ativa selecionada no menu principal
           if (t.id === activeTagId && selectEl === tagSelect) opt.selected = true;
-          // Mantém a tag selecionada anteriormente no menu de importação
           if (t.id === currentVal && selectEl === txtTagSelect) opt.selected = true;
           selectEl.appendChild(opt);
         });
-        if (selectEl === txtTagSelect && !selectEl.value) {
-          selectEl.value = activeTagId;
-        }
+        if (selectEl === txtTagSelect && !selectEl.value) selectEl.value = activeTagId;
       }
     });
 
     if (data.length === 0) {
-      emptyState.style.display = "block";
-      tagsContainer.innerHTML = "";
-      return;
+      emptyState.style.display = "block"; tagsContainer.innerHTML = ""; return;
     }
     emptyState.style.display = "none";
 
-    // Renderiza apenas a tag ativa
     tagsContainer.innerHTML = "";
     const tag = data.find(t => t.id === activeTagId);
     if (!tag) return;
 
     const block = document.createElement("div");
     block.className = "tag-block";
-
     const header = document.createElement("div");
     header.className = "tag-header";
-
     const nameEl = document.createElement("span");
-    nameEl.className = "tag-name";
-    nameEl.textContent = tag.name;
-
+    nameEl.className = "tag-name"; nameEl.textContent = tag.name;
     const actions = document.createElement("div");
     actions.className = "tag-actions";
 
     const playAllBtn = document.createElement("button");
-    playAllBtn.className = "secondary small";
-    playAllBtn.textContent = "▶️ Ouvir tudo";
+    playAllBtn.className = "secondary small"; playAllBtn.textContent = "▶️ Ouvir tudo";
     playAllBtn.addEventListener("click", () => playAllTag(tag));
 
     const translateAllBtn = document.createElement("button");
-    translateAllBtn.className = "secondary small";
-    translateAllBtn.textContent = "🇧🇷 Traduzir Tudo";
+    translateAllBtn.className = "secondary small"; translateAllBtn.textContent = "🇧🇷 Traduzir Tudo";
     translateAllBtn.addEventListener("click", () => translateWholeTag(tag, translateAllBtn));
 
     const loopLabel = document.createElement("label");
-    loopLabel.className = "loop-label";
-    loopLabel.title = "Tocar as frases em loop infinito";
+    loopLabel.className = "loop-label"; loopLabel.title = "Tocar em loop infinito";
     const loopCheck = document.createElement("input");
-    loopCheck.type = "checkbox";
-    loopCheck.checked = loopMode;
+    loopCheck.type = "checkbox"; loopCheck.checked = loopMode;
     loopCheck.addEventListener("change", (e) => { loopMode = e.target.checked; });
-    loopLabel.appendChild(loopCheck);
-    loopLabel.appendChild(document.createTextNode("🔁 Loop"));
+    loopLabel.appendChild(loopCheck); loopLabel.appendChild(document.createTextNode("🔁 Loop"));
 
     const localStopBtn = document.createElement("button");
-    localStopBtn.id = "stopBtnLocal";
-    localStopBtn.className = "danger small";
-    localStopBtn.textContent = "⏹ Parar";
-    localStopBtn.disabled = true;
+    localStopBtn.id = "stopBtnLocal"; localStopBtn.className = "danger small";
+    localStopBtn.textContent = "⏹ Parar"; localStopBtn.disabled = true;
     localStopBtn.addEventListener("click", stopAudio);
 
     const delBtn = document.createElement("button");
-    delBtn.className = "ghost";
-    delBtn.textContent = "🗑 Remover tag";
+    delBtn.className = "ghost"; delBtn.textContent = "🗑 Remover tag";
     delBtn.addEventListener("click", () => removeTag(tag.id));
 
     actions.appendChild(playAllBtn);
@@ -949,37 +927,56 @@
     actions.appendChild(localStopBtn);
     actions.appendChild(delBtn);
     
-    header.appendChild(nameEl);
-    header.appendChild(actions);
-    block.appendChild(header);
+    header.appendChild(nameEl); header.appendChild(actions); block.appendChild(header);
 
-    if (tag.phrases.length === 0) {
+    // Filtra as frases de acordo com a seleção
+    const filteredPhrases = tag.phrases.filter(p => {
+      if (currentFilter === 'mastered') return p.mastered;
+      if (currentFilter === 'not-mastered') return !p.mastered;
+      return true; // 'all'
+    });
+
+    if (filteredPhrases.length === 0) {
       const empty = document.createElement("div");
-      empty.className = "empty";
-      empty.textContent = "Nenhuma frase nesta tag.";
+      empty.className = "empty"; 
+      empty.textContent = currentFilter === 'all' ? "Nenhuma frase nesta tag." : "Nenhuma frase corresponde ao filtro.";
       block.appendChild(empty);
     } else {
       const ol = document.createElement("ol");
       ol.className = "phrases";
 
-      tag.phrases.forEach((p) => {
+      filteredPhrases.forEach((p) => {
         const li = document.createElement("li");
         li.dataset.phraseId = p.id;
+        if (p.mastered) li.classList.add("mastered");
 
         const contentDiv = document.createElement("div");
         contentDiv.className = "phrase-content";
 
         const txt = document.createElement("span");
-        txt.className = "phrase-text";
+        txt.className = "phrase-text original-english-text";
         txt.textContent = p.text;
+
+        const revText = document.createElement("span");
+        revText.className = "phrase-text reverse-portuguese-text";
+        
+        if (reverseMode) {
+          if (p.translation) {
+            revText.textContent = p.translation;
+          } else {
+            revText.textContent = "(Sem tradução)";
+            revText.style.opacity = "0.5";
+          }
+        }
 
         const transEl = document.createElement("div");
         transEl.className = "translation-text";
         
         li.addEventListener("click", e => {
           if (e.target.closest("button") || e.target.closest(".dictation-area")) return;
-          if ((quizMode || blindMode) && !li.classList.contains("revealed")) {
+          if ((quizMode || blindMode || reverseMode) && !li.classList.contains("revealed")) {
             li.classList.add("revealed");
+            if (reverseMode) speak(p.text, li, false, tag.id, p.id);
             return;
           }
           speak(p.text, li, false, tag.id, p.id);
@@ -987,40 +984,30 @@
 
         txt.addEventListener("dblclick", e => {
           e.stopPropagation();
-          if ((quizMode || blindMode) && !li.classList.contains("revealed")) return;
+          if ((quizMode || blindMode || reverseMode) && !li.classList.contains("revealed")) return;
           editPhrase(tag.id, p.id, txt);
         });
 
         contentDiv.appendChild(txt);
+        contentDiv.appendChild(revText);
         contentDiv.appendChild(transEl);
 
         if (dictationMode) {
           const dictArea = document.createElement("div");
           dictArea.className = "dictation-area";
-          
           const dictInput = document.createElement("input");
-          dictInput.type = "text";
-          dictInput.className = "dictation-input";
-          dictInput.placeholder = "Digite o que ouviu...";
+          dictInput.type = "text"; dictInput.className = "dictation-input"; dictInput.placeholder = "Digite o que ouviu...";
           dictInput.addEventListener("click", e => e.stopPropagation());
-          dictInput.addEventListener("keydown", e => {
-            if (e.key === "Enter") checkDictation(p.text, dictInput, dictFeedback);
-          });
+          dictInput.addEventListener("keydown", e => { if (e.key === "Enter") checkDictation(p.text, dictInput, dictFeedback); });
 
           const dictCheckBtn = document.createElement("button");
-          dictCheckBtn.className = "secondary small";
-          dictCheckBtn.textContent = "Verificar";
-          dictCheckBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            checkDictation(p.text, dictInput, dictFeedback);
-          });
+          dictCheckBtn.className = "secondary small"; dictCheckBtn.textContent = "Verificar";
+          dictCheckBtn.addEventListener("click", (e) => { e.stopPropagation(); checkDictation(p.text, dictInput, dictFeedback); });
 
           const dictFeedback = document.createElement("div");
           dictFeedback.className = "dictation-feedback";
 
-          dictArea.appendChild(dictInput);
-          dictArea.appendChild(dictCheckBtn);
-          dictArea.appendChild(dictFeedback);
+          dictArea.appendChild(dictInput); dictArea.appendChild(dictCheckBtn); dictArea.appendChild(dictFeedback);
           contentDiv.appendChild(dictArea);
         }
 
@@ -1031,30 +1018,40 @@
         const count = p.playCount || 0;
         countEl.className = "play-count" + (count === 0 ? " zero" : "");
         countEl.textContent = `👂 ${count}x`;
-        countEl.title = "Quantas vezes esta frase já foi ouvida";
+
+        // Botão de Check (Dominado)
+        const masteredBtn = document.createElement("button");
+        masteredBtn.className = "mastered-btn" + (p.mastered ? " is-mastered" : "");
+        masteredBtn.title = p.mastered ? "Desmarcar como dominada" : "Marcar como dominada";
+        masteredBtn.textContent = "✔️";
+        masteredBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleMastered(tag.id, p.id);
+        });
 
         const transBtn = document.createElement("button");
-        transBtn.className = "translate-btn"; transBtn.textContent = "🇧🇷"; transBtn.title = "Traduzir";
+        transBtn.className = "translate-btn trans-btn-icon"; transBtn.textContent = "🇧🇷";
         transBtn.addEventListener("click", (e) => {
           e.stopPropagation();
-          handleTranslatePhrase(p.id, p.text, transEl, transBtn);
+          handleTranslatePhrase(p.id, { english: p.text, translation: p.translation }, transEl, transBtn);
         });
 
         const editBtn = document.createElement("button");
-        editBtn.className = "ghost"; editBtn.textContent = "✏️"; editBtn.title = "Editar frase";
+        editBtn.className = "ghost"; editBtn.textContent = "✏️";
         editBtn.addEventListener("click", e => {
           e.stopPropagation();
-          if ((quizMode || blindMode) && !li.classList.contains("revealed")) return;
+          if ((quizMode || blindMode || reverseMode) && !li.classList.contains("revealed")) return;
           editPhrase(tag.id, p.id, txt);
         });
 
         const del = document.createElement("button");
-        del.className = "ghost"; del.textContent = "✕"; del.title = "Remover frase";
+        del.className = "ghost"; del.textContent = "✕";
         del.addEventListener("click", e => { e.stopPropagation(); removePhrase(tag.id, p.id); });
 
         li.appendChild(contentDiv);
         li.appendChild(countEl);
         li.appendChild(spk);
+        li.appendChild(masteredBtn); // Inserido aqui
         li.appendChild(transBtn);
         li.appendChild(editBtn);
         li.appendChild(del);
