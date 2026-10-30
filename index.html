@@ -35,6 +35,7 @@
   body.dark-mode .tag-name { color: var(--primary); }
   body.dark-mode ol.phrases li:hover { background: #1e293b; }
   body.dark-mode ol.phrases li:active { background: #334155; }
+  body.dark-mode ol.phrases li.mastered { background: rgba(22, 163, 74, 0.1); }
   body.dark-mode button.secondary { background: #334155; color: #e2e8f0; }
   body.dark-mode button.secondary:hover { background: #475569; }
   body.dark-mode button.danger:disabled { background: #7f1d1d; color: #fca5a5; }
@@ -47,7 +48,8 @@
   body.dark-mode .translation-text { color: #94a3b8; }
   body.dark-mode .play-count { background: #334155; color: #cbd5e1; }
   body.dark-mode .reverse-portuguese-text { color: #94a3b8; }
-  body.dark-mode ol.phrases li.mastered { background: rgba(22, 163, 74, 0.1); }
+  body.dark-mode button.mastered-btn:hover { background: rgba(255,255,255,0.05); }
+  body.dark-mode button.mastered-btn.is-mastered { background: rgba(22, 163, 74, 0.2); }
 
   * { box-sizing: border-box; }
   body {
@@ -84,6 +86,12 @@
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b6cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
     background-repeat: no-repeat; background-position: right 12px center; background-size: 20px;
     cursor: pointer;
+  }
+  
+  #filterSelect {
+    width: 90%; max-width: 400px; padding: 8px 12px; font-size: 0.9rem; 
+    border-color: var(--border); box-shadow: none; font-weight: 600;
+    background-image: none; appearance: auto; margin-top: 0;
   }
 
   .card {
@@ -270,7 +278,7 @@
 
   <div class="sticky-tag-bar">
     <select id="tagSelect"></select>
-    <select id="filterSelect" style="width: 90%; max-width: 400px; padding: 8px 12px; font-size: 0.9rem; border-color: var(--border); box-shadow: none;">
+    <select id="filterSelect">
       <option value="all">👁️ Mostrar Todas as Frases</option>
       <option value="not-mastered">📚 Apenas Não Dominadas</option>
       <option value="mastered">✅ Apenas Dominadas</option>
@@ -363,14 +371,36 @@
   <div id="tagsContainer"></div>
 </div>
 
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  // ⚠️ SUBSTITUA AQUI PELAS SUAS CONFIGURAÇÕES DO FIREBASE ⚠️
+  const firebaseConfig = {
+    apiKey: "SUA_API_KEY",
+    authDomain: "SEU_PROJETO.firebaseapp.com",
+    databaseURL: "https://SEU_PROJETO-default-rtdb.firebaseio.com",
+    projectId: "SEU_PROJETO",
+    storageBucket: "SEU_PROJETO.appspot.com",
+    messagingSenderId: "SEU_SENDER_ID",
+    appId: "SEU_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  
+  // Disponibiliza globalmente para o script principal
+  window.firebaseDB = { db, ref, set, onValue };
+</script>
+
 <script>
-  const STORAGE_KEY = "audioTextExercise.v1";
+      const STORAGE_KEY = "audioTextExercise.v1";
   const SETTINGS_KEY = "audioTextExercise.settings.v1";
 
   let data = loadData();
   let settings = loadSettings();
   let activeTagId = data.length ? data[0].id : null;
-  let currentFilter = "all"; // 'all', 'not-mastered', 'mastered'
+  let currentFilter = "all";
   
   let quizMode = false;
   let blindMode = false;
@@ -502,11 +532,9 @@
     phrase.mastered = !phrase.mastered;
     saveData();
     
-    // Se houver um filtro ativo, renderiza novamente para esconder/mostrar a frase
     if (currentFilter !== 'all') {
       render();
     } else {
-      // Se for "mostrar todas", apenas atualiza a UI sem recarregar tudo para não perder o scroll
       const li = tagsContainer.querySelector(`li[data-phrase-id="${phraseId}"]`);
       if (li) {
         if (phrase.mastered) {
@@ -596,8 +624,7 @@
     if (errors > 0) alert(`Tradução: ${count} sucesso, ${errors} falhas.`);
     else alert(`Todas as ${count} frases traduzidas!`);
   }
-
-  // ====== BACKUP E TXT ======
+    // ====== BACKUP E TXT ======
   exportBtn.addEventListener("click", () => {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -624,7 +651,7 @@
             text: String(p.text || ""), 
             translation: String(p.translation || ""),
             playCount: Number(p.playCount) || 0,
-            mastered: Boolean(p.mastered) // Compatibilidade com JSON novo
+            mastered: Boolean(p.mastered)
           })) : []
         }));
         activeTagId = data.length ? data[0].id : null;
@@ -678,9 +705,35 @@
   });
 
   function uid() { return Math.random().toString(36).slice(2, 10); }
-  function loadData() { try { const raw = localStorage.getItem(STORAGE_KEY); const parsed = raw ? JSON.parse(raw) : []; return Array.isArray(parsed) ? parsed : []; } catch { return []; } }
-  function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
-  function loadSettings() { const defaults = { accent: "en-US", rate: 1, repeat: 1, pause: 0.5, theme: "light" }; try { const raw = localStorage.getItem(SETTINGS_KEY); return raw ? { ...defaults, ...JSON.parse(raw) } : defaults; } catch { return defaults; } }
+  
+  function loadData() { 
+    try { 
+      const raw = localStorage.getItem(STORAGE_KEY); 
+      const parsed = raw ? JSON.parse(raw) : []; 
+      return Array.isArray(parsed) ? parsed : []; 
+    } catch { return []; } 
+  }
+
+  // ====== SALVAMENTO NA NUVEM (FIREBASE) ======
+  function saveData() { 
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); 
+    
+    if (window.firebaseDB && window.firebaseDB.db) {
+      const { db, ref, set } = window.firebaseDB;
+      try {
+        set(ref(db, 'appData'), data);
+      } catch (e) {
+        console.warn("Erro ao sincronizar com a nuvem:", e);
+      }
+    }
+  }
+
+  function loadSettings() { 
+    const defaults = { accent: "en-US", rate: 1, repeat: 1, pause: 0.5, theme: "light" }; 
+    try { const raw = localStorage.getItem(SETTINGS_KEY); return raw ? { ...defaults, ...JSON.parse(raw) } : defaults; } 
+    catch { return defaults; } 
+  }
+  
   function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
 
   function addTag() {
@@ -796,7 +849,6 @@
   }
 
   async function playAllTag(tag) {
-    // Pega apenas as frases que estão visíveis no filtro atual
     const visiblePhrases = tag.phrases.filter(p => {
       if (currentFilter === 'mastered') return p.mastered;
       if (currentFilter === 'not-mastered') return !p.mastered;
@@ -809,15 +861,11 @@
     const myToken = ++queueToken;
     isPlayingAll = true;
     enableStopBtn();
-    
-    // Pega os elementos <li> visíveis
     const lis = tagsContainer.querySelectorAll(`ol.phrases li`);
     
     do {
       for (let i = 0; i < visiblePhrases.length; i++) {
         if (myToken !== queueToken) { isPlayingAll = false; return; }
-        
-        // Encontra o <li> correspondente à frase (pode estar em índice diferente do DOM se filtrado)
         const li = Array.from(lis).find(el => el.dataset.phraseId === visiblePhrases[i].id);
         if (li) li.classList.add("speaking");
         
@@ -929,11 +977,10 @@
     
     header.appendChild(nameEl); header.appendChild(actions); block.appendChild(header);
 
-    // Filtra as frases de acordo com a seleção
     const filteredPhrases = tag.phrases.filter(p => {
       if (currentFilter === 'mastered') return p.mastered;
       if (currentFilter === 'not-mastered') return !p.mastered;
-      return true; // 'all'
+      return true;
     });
 
     if (filteredPhrases.length === 0) {
@@ -1019,7 +1066,6 @@
         countEl.className = "play-count" + (count === 0 ? " zero" : "");
         countEl.textContent = `👂 ${count}x`;
 
-        // Botão de Check (Dominado)
         const masteredBtn = document.createElement("button");
         masteredBtn.className = "mastered-btn" + (p.mastered ? " is-mastered" : "");
         masteredBtn.title = p.mastered ? "Desmarcar como dominada" : "Marcar como dominada";
@@ -1051,7 +1097,7 @@
         li.appendChild(contentDiv);
         li.appendChild(countEl);
         li.appendChild(spk);
-        li.appendChild(masteredBtn); // Inserido aqui
+        li.appendChild(masteredBtn);
         li.appendChild(transBtn);
         li.appendChild(editBtn);
         li.appendChild(del);
@@ -1064,12 +1110,42 @@
     if (window.speechSynthesis && window.speechSynthesis.speaking) enableStopBtn();
   }
 
+  // ====== SINCRONIZAÇÃO EM TEMPO REAL COM O FIREBASE ======
+  function setupFirebaseSync() {
+    if (!window.firebaseDB || !window.firebaseDB.db) return;
+    const { db, ref, onValue } = window.firebaseDB;
+
+    onValue(ref(db, 'appData'), (snapshot) => {
+      const remoteData = snapshot.val();
+      if (remoteData && Array.isArray(remoteData)) {
+        const localStr = JSON.stringify(data);
+        const remoteStr = JSON.stringify(remoteData);
+        
+        if (localStr !== remoteStr) {
+          data = remoteData;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+          
+          if (data.length && !data.find(t => t.id === activeTagId)) {
+            activeTagId = data[0].id;
+          }
+          
+          render();
+        }
+      } else if (data.length > 0) {
+        saveData();
+      }
+    });
+  }
+
   if ("speechSynthesis" in window) {
     window.speechSynthesis.onvoiceschanged = () => {};
     window.speechSynthesis.getVoices();
   }
 
   render();
+  
+  // Inicia a escuta do Firebase após um pequeno delay
+  setTimeout(setupFirebaseSync, 1000);
 </script>
 </body>
 </html>
